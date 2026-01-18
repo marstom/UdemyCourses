@@ -1,0 +1,19 @@
+syntax="proto3";
+import "google/protobuf/timestamp.proto";
+
+
+
+message Player {
+  int32 id = 1;
+  string name = 2;
+  bool is_active = 3;
+  google.protobuf.Timestamp last_login = 4;
+  
+  string cur_ad = 5;
+  enum Status{
+    NEW=0;
+    CONFIRMED=1;
+    DIED=2;
+  }
+  Status status = 6;
+}
