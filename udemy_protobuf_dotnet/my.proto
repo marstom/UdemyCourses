@@ -7,8 +7,13 @@ message Player {
   int32 id = 1;
   string name = 2;
   bool is_active = 3;
-  google.protobuf.Timestamp last_login = 4;
-  
+//  google.protobuf.Timestamp last_login = 4;
+    oneof last_login_data{
+      google.protobuf.Timestamp last_login=4;
+      int32 login_time=9;
+
+    }
+
   string cur_ad = 5;
   enum Status{
     NEW=0;
@@ -17,9 +22,16 @@ message Player {
   }
   Status status = 6;
   Address address = 7;
+  repeated string previous_games = 8; // this is array
+
+  //maps
+  map<string, int32> inventory = 10;
 }
 
 message Address {
   string street = 1;
   string city = 2;
 }
+
+
+// SERVICES
