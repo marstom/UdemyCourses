@@ -1,7 +1,7 @@
 syntax="proto3";
 import "google/protobuf/timestamp.proto";
 
-
+package tommy.game;
 
 message Player {
   int32 id = 1;
@@ -16,4 +16,10 @@ message Player {
     DIED=2;
   }
   Status status = 6;
+  Address address = 7;
+}
+
+message Address {
+  string street = 1;
+  string city = 2;
 }

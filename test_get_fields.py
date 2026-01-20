@@ -18,6 +18,7 @@ def main():
         last_login=Timestamp(seconds=1716153600),
         cur_ad="123 Main St, Anytown, USA",
         status=my_pb2.Player.Status.NEW,
+        address=my_pb2.Address(street="123 Main St", city="Anytown"),
     )
     print(player)
     print()
