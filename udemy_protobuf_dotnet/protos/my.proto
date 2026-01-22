@@ -35,3 +35,14 @@ message Address {
 
 
 // SERVICES
+
+
+message PlayerID {
+  int32 id = 1;
+}
+
+
+
+service PlayerService {
+  rpc GetPlayer(PlayerID) returns (Player);
+}

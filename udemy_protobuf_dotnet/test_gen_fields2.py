@@ -3,7 +3,7 @@ from datetime import datetime
 
 from google.protobuf.timestamp_pb2 import Timestamp
 
-from proto_output import my_pb2
+import my_pb2
 def main():
 
 

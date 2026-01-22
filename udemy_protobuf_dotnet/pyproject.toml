@@ -7,6 +7,9 @@ requires-python = ">=3.13"
 dependencies = [
     "invoke>=2.2.1",
     "protobuf>=6.33.4",
+    # install grpc
+    "grpcio",
+    "grpcio-tools>=1.76.0",
 ]
 
 [dependency-groups]

@@ -1,5 +1,5 @@
 from pathlib import Path
-from proto_output import my_pb2
+import my_pb2
 from google.protobuf.timestamp_pb2 import Timestamp
 from google.protobuf.json_format import MessageToJson, MessageToDict, ParseDict, Parse
 import json
