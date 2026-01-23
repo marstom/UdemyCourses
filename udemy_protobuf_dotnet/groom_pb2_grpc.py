@@ -26,7 +26,14 @@ if _version_not_supported:
 
 
 class GroomStub(object):
-    """Missing associated documentation comment in .proto file."""
+    """message GetGroomRequest {
+    string room_name = 1;
+    }
+    message GetGroomResponse {
+    string room_name = 1;
+    }
+
+    """
 
     def __init__(self, channel):
         """Constructor.
@@ -39,15 +46,22 @@ class GroomStub(object):
                 request_serializer=groom__pb2.RoomRegistrationRequest.SerializeToString,
                 response_deserializer=groom__pb2.RoomRegistrationResponse.FromString,
                 _registered_method=True)
-        self.GetGroom = channel.unary_unary(
-                '/groom.Groom/GetGroom',
-                request_serializer=groom__pb2.RoomRegistrationRequest.SerializeToString,
-                response_deserializer=groom__pb2.GetGroomResponse.FromString,
+        self.SendNewsFlash = channel.stream_unary(
+                '/groom.Groom/SendNewsFlash',
+                request_serializer=groom__pb2.NewsFlash.SerializeToString,
+                response_deserializer=groom__pb2.NewsStreamStatus.FromString,
                 _registered_method=True)
 
 
 class GroomServicer(object):
-    """Missing associated documentation comment in .proto file."""
+    """message GetGroomRequest {
+    string room_name = 1;
+    }
+    message GetGroomResponse {
+    string room_name = 1;
+    }
+
+    """
 
     def RegisterToRoom(self, request, context):
         """Missing associated documentation comment in .proto file."""
@@ -55,8 +69,9 @@ class GroomServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def GetGroom(self, request, context):
-        """Missing associated documentation comment in .proto file."""
+    def SendNewsFlash(self, request_iterator, context):
+        """rpc GetGroom (RoomRegistrationRequest) returns (GetGroomResponse);
+        """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
@@ -69,10 +84,10 @@ def add_GroomServicer_to_server(servicer, server):
                     request_deserializer=groom__pb2.RoomRegistrationRequest.FromString,
                     response_serializer=groom__pb2.RoomRegistrationResponse.SerializeToString,
             ),
-            'GetGroom': grpc.unary_unary_rpc_method_handler(
-                    servicer.GetGroom,
-                    request_deserializer=groom__pb2.RoomRegistrationRequest.FromString,
-                    response_serializer=groom__pb2.GetGroomResponse.SerializeToString,
+            'SendNewsFlash': grpc.stream_unary_rpc_method_handler(
+                    servicer.SendNewsFlash,
+                    request_deserializer=groom__pb2.NewsFlash.FromString,
+                    response_serializer=groom__pb2.NewsStreamStatus.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -83,7 +98,14 @@ def add_GroomServicer_to_server(servicer, server):
 
  # This class is part of an EXPERIMENTAL API.
 class Groom(object):
-    """Missing associated documentation comment in .proto file."""
+    """message GetGroomRequest {
+    string room_name = 1;
+    }
+    message GetGroomResponse {
+    string room_name = 1;
+    }
+
+    """
 
     @staticmethod
     def RegisterToRoom(request,
@@ -113,7 +135,7 @@ class Groom(object):
             _registered_method=True)
 
     @staticmethod
-    def GetGroom(request,
+    def SendNewsFlash(request_iterator,
             target,
             options=(),
             channel_credentials=None,
@@ -123,12 +145,12 @@ class Groom(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(
-            request,
+        return grpc.experimental.stream_unary(
+            request_iterator,
             target,
-            '/groom.Groom/GetGroom',
-            groom__pb2.RoomRegistrationRequest.SerializeToString,
-            groom__pb2.GetGroomResponse.FromString,
+            '/groom.Groom/SendNewsFlash',
+            groom__pb2.NewsFlash.SerializeToString,
+            groom__pb2.NewsStreamStatus.FromString,
             options,
             channel_credentials,
             insecure,

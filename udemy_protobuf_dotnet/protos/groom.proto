@@ -2,6 +2,8 @@ syntax="proto3";
 
 package groom;
 
+import "google/protobuf/timestamp.proto";
+
 message RoomRegistrationRequest {
     string room_name = 1;
 }
@@ -10,17 +12,30 @@ message RoomRegistrationResponse {
   string room_id = 1;
 }
 
+///////////////
 
-message GetGroomRequest {
-    string room_name = 1;
+message NewsFlash {
+  google.protobuf.Timestamp news_time = 1;
+  string news_item = 2;
 }
-message GetGroomResponse {
-    string room_name = 1;
+
+message NewsStreamStatus {
+  bool success = 1;
 }
+
+// message GetGroomRequest {
+//     string room_name = 1;
+// }
+// message GetGroomResponse {
+//     string room_name = 1;
+// }
 
 
 service Groom {
   rpc RegisterToRoom (RoomRegistrationRequest) returns (RoomRegistrationResponse);
-  rpc GetGroom (RoomRegistrationRequest) returns (GetGroomResponse);
+  // rpc GetGroom (RoomRegistrationRequest) returns (GetGroomResponse);
+  rpc SendNewsFlash (stream NewsFlash) returns (NewsStreamStatus);
 }
+
+
 
