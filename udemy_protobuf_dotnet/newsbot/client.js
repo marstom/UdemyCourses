@@ -18,7 +18,7 @@ const GroomService = grpc.loadPackageDefinition(grpcObj).groom.Groom;
 
 // Creating the service client
 const clientStub = new GroomService(
-   "localhost:5054",
+   "localhost:50052",
    grpc.credentials.createInsecure()
 );
 
@@ -27,7 +27,8 @@ var call = clientStub.sendNewsFlash(function(error, newsStatus) {
   if (error) {
     console.error(error);
   }
-  console.log('Stream success: ', newsStatus.success);
+  // console.log('Stream success: ', newsStatus.success);
+    console.log('Stream success: ', newsStatus);
 });
 
 var itemsCount = 0;

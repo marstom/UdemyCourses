@@ -30,7 +30,7 @@ class GroomService(groom_pb2_grpc.GroomServicer):
 def main():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
     groom_pb2_grpc.add_GroomServicer_to_server(GroomService(), server)
-    server.add_insecure_port('[::]:50051')
+    server.add_insecure_port('[::]:50052')
     server.start()
     server.wait_for_termination()
 

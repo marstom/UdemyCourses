@@ -36,7 +36,7 @@ def send_news_flash():
             news_time=ts,
         )
 
-    with grpc.insecure_channel('localhost:50051') as channel:
+    with grpc.insecure_channel('localhost:50052') as channel:
         stub = groom_pb2_grpc.GroomStub(channel)
         # stub = groom_pb2_grpc.GroomServiceStub(channel)
 
