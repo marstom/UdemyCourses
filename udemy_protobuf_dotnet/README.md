@@ -23,3 +23,10 @@ FE ,streamuje newsy
 node client.js
 
 ```
+
+
+# TODO:
+
+- [ ] Learn how to write unittests to GrpC
+- [ ] Connect simple DB
+- [ ] Minimal FE

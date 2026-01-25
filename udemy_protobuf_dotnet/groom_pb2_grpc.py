@@ -3,6 +3,7 @@
 import grpc
 import warnings
 
+from google.protobuf import empty_pb2 as google_dot_protobuf_dot_empty__pb2
 import groom_pb2 as groom__pb2
 
 GRPC_GENERATED_VERSION = '1.76.0'
@@ -26,14 +27,7 @@ if _version_not_supported:
 
 
 class GroomStub(object):
-    """message GetGroomRequest {
-    string room_name = 1;
-    }
-    message GetGroomResponse {
-    string room_name = 1;
-    }
-
-    """
+    """Missing associated documentation comment in .proto file."""
 
     def __init__(self, channel):
         """Constructor.
@@ -51,17 +45,15 @@ class GroomStub(object):
                 request_serializer=groom__pb2.NewsFlash.SerializeToString,
                 response_deserializer=groom__pb2.NewsStreamStatus.FromString,
                 _registered_method=True)
+        self.StartMonitoring = channel.stream_stream(
+                '/groom.Groom/StartMonitoring',
+                request_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
+                response_deserializer=groom__pb2.ReceivedMessage.FromString,
+                _registered_method=True)
 
 
 class GroomServicer(object):
-    """message GetGroomRequest {
-    string room_name = 1;
-    }
-    message GetGroomResponse {
-    string room_name = 1;
-    }
-
-    """
+    """Missing associated documentation comment in .proto file."""
 
     def RegisterToRoom(self, request, context):
         """Missing associated documentation comment in .proto file."""
@@ -72,6 +64,12 @@ class GroomServicer(object):
     def SendNewsFlash(self, request_iterator, context):
         """rpc GetGroom (RoomRegistrationRequest) returns (GetGroomResponse);
         """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def StartMonitoring(self, request_iterator, context):
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
@@ -89,6 +87,11 @@ def add_GroomServicer_to_server(servicer, server):
                     request_deserializer=groom__pb2.NewsFlash.FromString,
                     response_serializer=groom__pb2.NewsStreamStatus.SerializeToString,
             ),
+            'StartMonitoring': grpc.stream_stream_rpc_method_handler(
+                    servicer.StartMonitoring,
+                    request_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
+                    response_serializer=groom__pb2.ReceivedMessage.SerializeToString,
+            ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
             'groom.Groom', rpc_method_handlers)
@@ -98,14 +101,7 @@ def add_GroomServicer_to_server(servicer, server):
 
  # This class is part of an EXPERIMENTAL API.
 class Groom(object):
-    """message GetGroomRequest {
-    string room_name = 1;
-    }
-    message GetGroomResponse {
-    string room_name = 1;
-    }
-
-    """
+    """Missing associated documentation comment in .proto file."""
 
     @staticmethod
     def RegisterToRoom(request,
@@ -151,6 +147,33 @@ class Groom(object):
             '/groom.Groom/SendNewsFlash',
             groom__pb2.NewsFlash.SerializeToString,
             groom__pb2.NewsStreamStatus.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def StartMonitoring(request_iterator,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.stream_stream(
+            request_iterator,
+            target,
+            '/groom.Groom/StartMonitoring',
+            google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
+            groom__pb2.ReceivedMessage.FromString,
             options,
             channel_credentials,
             insecure,
