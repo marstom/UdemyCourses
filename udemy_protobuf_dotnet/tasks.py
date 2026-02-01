@@ -3,27 +3,7 @@ from pathlib import Path
 import os
 
 PROJECT_DIR = Path(__file__).resolve().parent
-
-# @task
-# def gen(c):
-#     Run from this folder so relative paths work even
-#     when Invoke is executed from the repo root.
-# c.run(f'cd "{PROJECT_DIR}" && python -m grpc_tools.protoc -I. --python_out=./proto_output my.proto')
-# c.run(f'cd "{PROJECT_DIR}" && python -m grpc_tools.protoc -I. --python_out=./proto_output groom.proto')
-#
-
-
-"""
-
-uv run python -m grpc_tools.protoc \
-  -I protos \
-  --python_out=. \
-  --grpc_python_out=. \
-  protos/widget.proto
-
-
-"""
-
+## GRPC Regenerate
 
 @task
 def get_grpc(c):
@@ -74,9 +54,9 @@ def run_groom_admin(c):
 @task
 def run_node_client(c):
     """
-    Next run this cllient
-    Node client which send news
-
+    Next run this client:
+    It will push some messages to queue, so our client can display something!
+    Node client which send news.
     """
     # pty - colors
     # c.run("node newsbot/client.js", pty=True, echo=True)
