@@ -68,7 +68,7 @@ def run_groom_server(c):
 @task
 def run_groom_admin(c):
     """ Second run this admin panel, it will monitor messages for you!"""
-    c.run("PYTHONPATH=groomadmin/ python groomadmin/admin.py")
+    c.run("cd groomadmin && python monitor_chat.py", echo=True, pty=True)
 
 
 @task
