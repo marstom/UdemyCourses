@@ -21,6 +21,7 @@ class GroomService(groom_pb2_grpc.GroomServicer):
         self.mq = MessagesQueue()
 
     def RegisterToRoom(self, request, context):
+        """Client side streaming to server"""
         print("Get a room")
         return groom_pb2.RoomRegistrationResponse(room_id=f"Room {request.room_name}")
 
@@ -55,8 +56,10 @@ class GroomService(groom_pb2_grpc.GroomServicer):
 
         while True:
             if self.mq.get_message_count() > 0:
-                yield self.mq.received_message()
-                time.sleep(0.5)
+                received_message = self.mq.received_message()
+                print(received_message)
+                yield received_message
+            time.sleep(0.5)
 
 def main():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))

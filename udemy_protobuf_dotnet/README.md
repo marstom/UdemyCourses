@@ -17,6 +17,10 @@ source init
 python ./src/groom_server.py
 python ./src/groom_client.py
 
+
+# invoke completeion script
+
+eval "$(invoke --print-completion-script zsh)"
 ```
 
 FE ,streamuje newsy
