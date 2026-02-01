@@ -10,6 +10,8 @@ dependencies = [
     # install grpc
     "grpcio",
     "grpcio-tools>=1.76.0",
+    "pytest>=9.0.2",
+    "icecream>=2.1.9",
 ]
 
 [dependency-groups]

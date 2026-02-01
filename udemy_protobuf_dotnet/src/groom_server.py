@@ -8,11 +8,18 @@ import groom_pb2_grpc
 import grpc
 from concurrent import futures
 
+from src.utils.message_queue import MessagesQueue
+
+
 # from google.protobuf.internal.well_known_types import Empty
 
 
 # TODO: Implement the GroomService class
 class GroomService(groom_pb2_grpc.GroomServicer):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.mq = MessagesQueue()
+
     def RegisterToRoom(self, request, context):
         print("Get a room")
         return groom_pb2.RoomRegistrationResponse(room_id=f"Room {request.room_name}")
@@ -25,8 +32,9 @@ class GroomService(groom_pb2_grpc.GroomServicer):
     def SendNewsFlash(self, request_iterator, context):
         """ Client side streaming """
         try:
-            for request in request_iterator:
-                print(f"News flash: {request.news_item} at {request.news_time}")
+            for news_flash in request_iterator:
+                print(f"News flash: {news_flash.news_item} at {news_flash.news_time}")
+                self.mq.add_news_to_queue(news_flash)
             return groom_pb2.NewsStreamStatus(success=True)
         except grpc.RpcError as e:
             # Typical when client cancels/aborts mid-stream; gRPC logs this as
@@ -37,11 +45,18 @@ class GroomService(groom_pb2_grpc.GroomServicer):
     def StartMonitoring(self, request, context):
         """ Server side streaming """
         print(f"Monitoring: {request}, {context}")
+
+
         # for request in request:
         #     print(f"Monitoring: {request}")
-        for cnt in range(10):
-            yield groom_pb2.ReceivedMessage(msg_time=datetime.now(), contents=f"The test message started {cnt}", user="id__groom")
-            time.sleep(0.5)
+        # for cnt in range(10):
+        #     yield groom_pb2.ReceivedMessage(msg_time=datetime.now(), contents=f"The test message started {cnt}", user="id__groom")
+        #     time.sleep(0.5)
+
+        while True:
+            if self.mq.get_message_count() > 0:
+                yield self.mq.received_message()
+                time.sleep(0.5)
 
 def main():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
