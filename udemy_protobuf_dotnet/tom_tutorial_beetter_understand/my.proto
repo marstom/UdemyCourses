@@ -18,8 +18,16 @@ message UnpackReqest {
 message PackReqest {
   string item_name = 1;
 }
+message UnpackIdxRequest {
+  int32 item_idx = 1;
+}
 message PackResponse {
   string added = 1;
+}
+
+message PackResponseWitId {
+  string added = 1;
+  int32 id = 2;
 }
 
 message UnpackContinouslyResponse {
@@ -31,4 +39,6 @@ service BackpackManager {
   rpc unpack (UnpackReqest) returns (BackpackItemResponse);
   rpc unpack_continously (UnpackReqest) returns (stream UnpackContinouslyResponse);
   rpc pack_continously (stream PackReqest) returns (PackResponse);
+  rpc pack_and_immediately_show_id(stream PackReqest) returns (stream PackResponseWitId);
+  rpc unpack_and_immediately_show(stream UnpackIdxRequest) returns (stream UnpackContinouslyResponse);
 }

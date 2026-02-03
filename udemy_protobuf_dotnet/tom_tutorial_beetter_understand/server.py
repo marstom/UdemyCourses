@@ -15,7 +15,7 @@ class BackpackManager(my_pb2_grpc.BackpackManagerServicer):
 
     def __init__(self):
 
-        self.items = [ff.text()[:10] for a in range(3)]
+        self.items = [ff.text()[:10] for a in range(30)]
     def pack(self, request, context):
         # Echo back the packed item.
         self.items.append(request.item)
@@ -41,12 +41,45 @@ class BackpackManager(my_pb2_grpc.BackpackManagerServicer):
                 # yield 1
 
     def pack_continously(self, request_iter, context):
+        """
+        Client streaming
+        Client send requests until he completes
+        """
         for request in request_iter:
             print("Pack item...")
             print(request)
             self.items.append(request.item_name)
             time.sleep(0.5)
         return my_pb2.PackResponse(added=f"OK!")
+
+
+    def pack_and_immediately_show_id(self, request_iter, context):
+        """
+        Bi-directional streaming
+
+        """
+        for request in request_iter:
+            print("Pack item...")
+            print(request)
+            self.items.append(request.item_name)
+            time.sleep(0.5)
+            yield my_pb2.PackResponseWitId(added=f"Item {request.item_name} packed", id=len(self.items))
+
+    def unpack_and_immediately_show(self, request_iter, context):
+        """
+        Bi-directional streaming
+
+        Simultanous request-responses
+        """
+        for request in request_iter:
+            print(request)
+            # import ipdb; ipdb.set_trace()
+            if len(self.items) >=request.item_idx:
+                fet_item = self.items.pop(request.item_idx)
+                yield my_pb2.UnpackContinouslyResponse(fetched_item=f"Item fetched: {fet_item}")
+            else:
+                print("Inted ooorange")
+            time.sleep(0.5)
 
 
 

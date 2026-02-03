@@ -16,6 +16,7 @@ dependencies = [
     "async-typer>=0.1.10",
     "watchfiles>=1.1.1",
     "faker>=40.1.2",
+    "ipdb>=0.13.13",
 ]
 
 [dependency-groups]

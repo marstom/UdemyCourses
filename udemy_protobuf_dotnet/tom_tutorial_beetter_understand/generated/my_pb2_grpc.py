@@ -54,6 +54,16 @@ class BackpackManagerStub(object):
                 request_serializer=my__pb2.PackReqest.SerializeToString,
                 response_deserializer=my__pb2.PackResponse.FromString,
                 _registered_method=True)
+        self.pack_and_immediately_show_id = channel.stream_stream(
+                '/BackpackManager/pack_and_immediately_show_id',
+                request_serializer=my__pb2.PackReqest.SerializeToString,
+                response_deserializer=my__pb2.PackResponseWitId.FromString,
+                _registered_method=True)
+        self.unpack_and_immediately_show = channel.stream_stream(
+                '/BackpackManager/unpack_and_immediately_show',
+                request_serializer=my__pb2.UnpackIdxRequest.SerializeToString,
+                response_deserializer=my__pb2.UnpackContinouslyResponse.FromString,
+                _registered_method=True)
 
 
 class BackpackManagerServicer(object):
@@ -83,6 +93,18 @@ class BackpackManagerServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def pack_and_immediately_show_id(self, request_iterator, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def unpack_and_immediately_show(self, request_iterator, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_BackpackManagerServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -105,6 +127,16 @@ def add_BackpackManagerServicer_to_server(servicer, server):
                     servicer.pack_continously,
                     request_deserializer=my__pb2.PackReqest.FromString,
                     response_serializer=my__pb2.PackResponse.SerializeToString,
+            ),
+            'pack_and_immediately_show_id': grpc.stream_stream_rpc_method_handler(
+                    servicer.pack_and_immediately_show_id,
+                    request_deserializer=my__pb2.PackReqest.FromString,
+                    response_serializer=my__pb2.PackResponseWitId.SerializeToString,
+            ),
+            'unpack_and_immediately_show': grpc.stream_stream_rpc_method_handler(
+                    servicer.unpack_and_immediately_show,
+                    request_deserializer=my__pb2.UnpackIdxRequest.FromString,
+                    response_serializer=my__pb2.UnpackContinouslyResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -215,6 +247,60 @@ class BackpackManager(object):
             '/BackpackManager/pack_continously',
             my__pb2.PackReqest.SerializeToString,
             my__pb2.PackResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def pack_and_immediately_show_id(request_iterator,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.stream_stream(
+            request_iterator,
+            target,
+            '/BackpackManager/pack_and_immediately_show_id',
+            my__pb2.PackReqest.SerializeToString,
+            my__pb2.PackResponseWitId.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def unpack_and_immediately_show(request_iterator,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.stream_stream(
+            request_iterator,
+            target,
+            '/BackpackManager/unpack_and_immediately_show',
+            my__pb2.UnpackIdxRequest.SerializeToString,
+            my__pb2.UnpackContinouslyResponse.FromString,
             options,
             channel_credentials,
             insecure,
