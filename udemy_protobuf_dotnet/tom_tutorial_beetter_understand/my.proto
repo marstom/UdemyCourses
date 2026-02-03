@@ -15,7 +15,20 @@ message UnpackReqest {
   string item_name = 1;
 }
 
+message PackReqest {
+  string item_name = 1;
+}
+message PackResponse {
+  string added = 1;
+}
+
+message UnpackContinouslyResponse {
+  string fetched_item = 1;
+}
+
 service BackpackManager {
   rpc pack (BackpackItemRequest) returns (BackpackItemResponse);
   rpc unpack (UnpackReqest) returns (BackpackItemResponse);
+  rpc unpack_continously (UnpackReqest) returns (stream UnpackContinouslyResponse);
+  rpc pack_continously (stream PackReqest) returns (PackResponse);
 }

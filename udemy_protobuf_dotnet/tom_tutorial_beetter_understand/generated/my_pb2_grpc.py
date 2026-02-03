@@ -44,6 +44,16 @@ class BackpackManagerStub(object):
                 request_serializer=my__pb2.UnpackReqest.SerializeToString,
                 response_deserializer=my__pb2.BackpackItemResponse.FromString,
                 _registered_method=True)
+        self.unpack_continously = channel.unary_stream(
+                '/BackpackManager/unpack_continously',
+                request_serializer=my__pb2.UnpackReqest.SerializeToString,
+                response_deserializer=my__pb2.UnpackContinouslyResponse.FromString,
+                _registered_method=True)
+        self.pack_continously = channel.stream_unary(
+                '/BackpackManager/pack_continously',
+                request_serializer=my__pb2.PackReqest.SerializeToString,
+                response_deserializer=my__pb2.PackResponse.FromString,
+                _registered_method=True)
 
 
 class BackpackManagerServicer(object):
@@ -61,6 +71,18 @@ class BackpackManagerServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def unpack_continously(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def pack_continously(self, request_iterator, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_BackpackManagerServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -73,6 +95,16 @@ def add_BackpackManagerServicer_to_server(servicer, server):
                     servicer.unpack,
                     request_deserializer=my__pb2.UnpackReqest.FromString,
                     response_serializer=my__pb2.BackpackItemResponse.SerializeToString,
+            ),
+            'unpack_continously': grpc.unary_stream_rpc_method_handler(
+                    servicer.unpack_continously,
+                    request_deserializer=my__pb2.UnpackReqest.FromString,
+                    response_serializer=my__pb2.UnpackContinouslyResponse.SerializeToString,
+            ),
+            'pack_continously': grpc.stream_unary_rpc_method_handler(
+                    servicer.pack_continously,
+                    request_deserializer=my__pb2.PackReqest.FromString,
+                    response_serializer=my__pb2.PackResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -129,6 +161,60 @@ class BackpackManager(object):
             '/BackpackManager/unpack',
             my__pb2.UnpackReqest.SerializeToString,
             my__pb2.BackpackItemResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def unpack_continously(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_stream(
+            request,
+            target,
+            '/BackpackManager/unpack_continously',
+            my__pb2.UnpackReqest.SerializeToString,
+            my__pb2.UnpackContinouslyResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def pack_continously(request_iterator,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.stream_unary(
+            request_iterator,
+            target,
+            '/BackpackManager/pack_continously',
+            my__pb2.PackReqest.SerializeToString,
+            my__pb2.PackResponse.FromString,
             options,
             channel_credentials,
             insecure,

@@ -12,6 +12,10 @@ dependencies = [
     "grpcio-tools>=1.76.0",
     "pytest>=9.0.2",
     "icecream>=2.1.9",
+    "typer>=0.21.1",
+    "async-typer>=0.1.10",
+    "watchfiles>=1.1.1",
+    "faker>=40.1.2",
 ]
 
 [dependency-groups]

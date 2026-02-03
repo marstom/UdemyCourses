@@ -24,7 +24,7 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x08my.proto\"2\n\x13\x42\x61\x63kpackItemRequest\x12\x0c\n\x04item\x18\x01 \x01(\t\x12\r\n\x05\x63ount\x18\x02 \x01(\x05\"$\n\x14\x42\x61\x63kpackItemResponse\x12\x0c\n\x04item\x18\x01 \x01(\t\"!\n\x0cUnpackReqest\x12\x11\n\titem_name\x18\x01 \x01(\t2v\n\x0f\x42\x61\x63kpackManager\x12\x33\n\x04pack\x12\x14.BackpackItemRequest\x1a\x15.BackpackItemResponse\x12.\n\x06unpack\x12\r.UnpackReqest\x1a\x15.BackpackItemResponseb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x08my.proto\"2\n\x13\x42\x61\x63kpackItemRequest\x12\x0c\n\x04item\x18\x01 \x01(\t\x12\r\n\x05\x63ount\x18\x02 \x01(\x05\"$\n\x14\x42\x61\x63kpackItemResponse\x12\x0c\n\x04item\x18\x01 \x01(\t\"!\n\x0cUnpackReqest\x12\x11\n\titem_name\x18\x01 \x01(\t\"\x1f\n\nPackReqest\x12\x11\n\titem_name\x18\x01 \x01(\t\"\x1d\n\x0cPackResponse\x12\r\n\x05\x61\x64\x64\x65\x64\x18\x01 \x01(\t\"1\n\x19UnpackContinouslyResponse\x12\x14\n\x0c\x66\x65tched_item\x18\x01 \x01(\t2\xeb\x01\n\x0f\x42\x61\x63kpackManager\x12\x33\n\x04pack\x12\x14.BackpackItemRequest\x1a\x15.BackpackItemResponse\x12.\n\x06unpack\x12\r.UnpackReqest\x1a\x15.BackpackItemResponse\x12\x41\n\x12unpack_continously\x12\r.UnpackReqest\x1a\x1a.UnpackContinouslyResponse0\x01\x12\x30\n\x10pack_continously\x12\x0b.PackReqest\x1a\r.PackResponse(\x01\x62\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -37,6 +37,12 @@ if not _descriptor._USE_C_DESCRIPTORS:
   _globals['_BACKPACKITEMRESPONSE']._serialized_end=100
   _globals['_UNPACKREQEST']._serialized_start=102
   _globals['_UNPACKREQEST']._serialized_end=135
-  _globals['_BACKPACKMANAGER']._serialized_start=137
-  _globals['_BACKPACKMANAGER']._serialized_end=255
+  _globals['_PACKREQEST']._serialized_start=137
+  _globals['_PACKREQEST']._serialized_end=168
+  _globals['_PACKRESPONSE']._serialized_start=170
+  _globals['_PACKRESPONSE']._serialized_end=199
+  _globals['_UNPACKCONTINOUSLYRESPONSE']._serialized_start=201
+  _globals['_UNPACKCONTINOUSLYRESPONSE']._serialized_end=250
+  _globals['_BACKPACKMANAGER']._serialized_start=253
+  _globals['_BACKPACKMANAGER']._serialized_end=488
 # @@protoc_insertion_point(module_scope)
