@@ -1,3 +1,4 @@
 *.bin
 *.bkp
 **/.DS_Store
+**/node_modules

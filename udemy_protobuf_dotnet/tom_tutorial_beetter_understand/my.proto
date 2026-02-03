@@ -1,0 +1,21 @@
+syntax="proto3";
+//import "google/protobuf/empty.proto";
+
+message BackpackItemRequest {
+  string item = 1;
+  int32 count = 2;
+}
+
+message BackpackItemResponse {
+  string item = 1;
+}
+
+
+message UnpackReqest {
+  string item_name = 1;
+}
+
+service BackpackManager {
+  rpc pack (BackpackItemRequest) returns (BackpackItemResponse);
+  rpc unpack (UnpackReqest) returns (BackpackItemResponse);
+}
