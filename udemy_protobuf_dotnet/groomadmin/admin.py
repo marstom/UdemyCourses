@@ -3,7 +3,7 @@ from datetime import datetime
 from google.protobuf import empty_pb2
 
 import grpc.aio
-import groom_pb2_grpc
+from  groomadmin.generated import groom_pb2_grpc
 
 # Match C#: http://localhost:5054 (use 50052 if your groom server runs there)
 SERVER_ADDRESS = "localhost:50052"

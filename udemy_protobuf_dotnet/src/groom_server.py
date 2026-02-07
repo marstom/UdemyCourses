@@ -3,8 +3,8 @@ from datetime import datetime
 
 from google.protobuf.internal import well_known_types
 
-import groom_pb2
-import groom_pb2_grpc   
+from generated import groom_pb2
+from generated import groom_pb2_grpc   
 import grpc
 from concurrent import futures
 

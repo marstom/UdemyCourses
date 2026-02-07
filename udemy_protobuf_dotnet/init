@@ -1,4 +1,4 @@
 # source it
 # 
-export PYTHONPATH=$(pwd)
+export PYTHONPATH=$(pwd):$(pwd)/generated
 source .venv/bin/activate
