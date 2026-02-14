@@ -3,6 +3,7 @@ syntax="proto3";
 package groom;
 
 import "google/protobuf/timestamp.proto";
+
 import "google/protobuf/empty.proto";
 
 message RoomRegistrationRequest {

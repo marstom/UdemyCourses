@@ -6,10 +6,7 @@ readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
     "invoke>=2.2.1",
-    "protobuf>=6.33.4",
     # install grpc
-    "grpcio",
-    "grpcio-tools>=1.76.0",
     "pytest>=9.0.2",
     "icecream>=2.1.9",
     "typer>=0.21.1",
@@ -17,6 +14,9 @@ dependencies = [
     "watchfiles>=1.1.1",
     "faker>=40.1.2",
     "ipdb>=0.13.13",
+    "grpcio>=1.78.0",
+    "grpcio-tools>=1.78.0",
+    "protobuf>=6.33.5",
 ]
 
 [dependency-groups]

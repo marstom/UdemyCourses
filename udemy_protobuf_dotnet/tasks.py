@@ -9,6 +9,10 @@ def source(c):
     c.run("export PYTHONPATH=$(pwd):$(pwd)/generated")
 
 @task
+def clean(c):
+    c.run('find . -type f \( -name "*_pb2.py" -o -name "*_pb2.pyi" -o -name "*_pb2_grpc.py" \) -delete')
+
+@task
 def ppath(c):
     c.run("echo $PYTHONPATH")
 
@@ -48,7 +52,7 @@ def _generate_grpc_groomadmin(c):
             """
         )
 
-@task(_generate_grpc, _generate_grpc_groomadmin)
+@task(clean, _generate_grpc, _generate_grpc_groomadmin)
 def generate_protos(c):
     """This generates all protos"""
     print("Protos generated")
