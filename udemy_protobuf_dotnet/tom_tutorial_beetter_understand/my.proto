@@ -1,5 +1,5 @@
 syntax="proto3";
-//import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
 
 message BackpackItemRequest {
   string item = 1;
@@ -7,7 +7,8 @@ message BackpackItemRequest {
 }
 
 message BackpackItemResponse {
-  string item = 1;
+  google.protobuf.Timestamp msg_time = 1;
+  string item = 2;
 }
 
 

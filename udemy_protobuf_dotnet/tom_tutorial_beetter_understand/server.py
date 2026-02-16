@@ -1,11 +1,13 @@
 import asyncio
+import datetime
 import logging
 import time
 from concurrent import futures
 
 import grpc
+from google.protobuf.timestamp_pb2 import Timestamp
 
-from generated import my_pb2_grpc, my_pb2
+import my_pb2_grpc, my_pb2
 
 from faker import Faker
 
@@ -20,12 +22,13 @@ class BackpackManager(my_pb2_grpc.BackpackManagerServicer):
         # Echo back the packed item.
         self.items.append(request.item)
         print(request.item)
-        return my_pb2.BackpackItemResponse(item=request.item)
+        Timestamp
+        return my_pb2.BackpackItemResponse(item=request.item, msg_time=datetime.datetime.now())
 
     def unpack(self, request, context):
         # In a real app you'd track state; here we just return an empty response.
         print("00000000")
-        return my_pb2.BackpackItemResponse(item=self.items.pop())
+        return my_pb2.BackpackItemResponse(item=self.items.pop(), msg_time=datetime.datetime.now())
 
     def unpack_continously(self, request, context):
         """ Server streaming"""
@@ -92,4 +95,5 @@ if __name__ == "__main__":
     server.add_insecure_port("[::]:" + port)
     server.start()
     print("Server started, listening on " + port)
+    server.wait_for_termination()
     server.wait_for_termination()

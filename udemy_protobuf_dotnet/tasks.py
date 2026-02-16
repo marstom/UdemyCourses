@@ -10,7 +10,10 @@ def source(c):
 
 @task
 def clean(c):
-    c.run('find . -type f \( -name "*_pb2.py" -o -name "*_pb2.pyi" -o -name "*_pb2_grpc.py" \) -delete')
+    try:
+        c.run("find . -type f \\( -name '*_pb2.py' -o -name '*_pb2.pyi' -o -name '*_pb2_grpc.py' \\) -delete")
+    except:
+        print("Noting to revmove")
 
 @task
 def ppath(c):

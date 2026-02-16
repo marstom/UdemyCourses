@@ -3,8 +3,13 @@
 export PYTHONPATH=$(pwd):$(pwd)/generated
 
 
+# python -m grpc_tools.protoc \
+#   -I ./ \
+#   --python_out=generated \
+#   --grpc_python_out=generated \
+#   my.proto
 python -m grpc_tools.protoc \
   -I ./ \
-  --python_out=generated \
-  --grpc_python_out=generated \
+  --python_out=. \
+  --grpc_python_out=. \
   my.proto

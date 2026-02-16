@@ -1,13 +1,10 @@
 import time
-from datetime import datetime
-
-from google.protobuf.internal import well_known_types
-
-from generated import groom_pb2
-from generated import groom_pb2_grpc   
-import grpc
 from concurrent import futures
 
+import grpc
+
+from generated import groom_pb2
+from generated import groom_pb2_grpc
 from src.utils.message_queue import MessagesQueue
 
 

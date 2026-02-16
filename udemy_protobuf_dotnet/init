@@ -1,6 +1,4 @@
-# source it
-# 
 export PYTHONPATH=$(pwd):$(pwd)/generated
-# source .venv/bin/activate
-#eval "$(invoke --print-completion-script zsh)"
+source .venv/bin/activate
+eval "$(invoke --print-completion-script zsh)"
 

@@ -1,0 +1,8 @@
+protobuf
+grpcio
+grpcio-tools
+faker
+pytest
+ipython
+ipdb
+invoke
