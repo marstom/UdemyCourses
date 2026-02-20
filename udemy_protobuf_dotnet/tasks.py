@@ -12,12 +12,13 @@ def source(c):
 def clean(c):
     """Cleans pb2, but-dangerous, be careful .venv can suffer."""
     try:
-        c.run(
-            """
-            rm -rf ./generated/*
-            rm -rf ./groomadmin/generated/*
-            """
-        )
+        print("CLEANS INIT I S BAD")
+        # c.run(
+        #     """
+        #     rm -rf ./generated/*
+        #     rm -rf ./groomadmin/generated/*
+        #     """
+        # )
     except:
         print("Noting to revmove")
 

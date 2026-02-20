@@ -8,24 +8,19 @@ from generated import groom_pb2_grpc
 from src.utils.message_queue import MessagesQueue
 
 
-# from google.protobuf.internal.well_known_types import Empty
-
-
-# TODO: Implement the GroomService class
 class GroomService(groom_pb2_grpc.GroomServicer):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.mq = MessagesQueue()
+        self.user_queues = dict()
 
     def RegisterToRoom(self, request, context):
         """Client side streaming to server"""
         print("Get a room")
         return groom_pb2.RoomRegistrationResponse(room_id=f"Room {request.room_name}")
 
-
-
     # def GetGroom(self, request, context):
-        # return groom_pb2.GetGroomResponse(room_name=request.room_name)
+    # return groom_pb2.GetGroomResponse(room_name=request.room_name)
 
     def SendNewsFlash(self, request_iterator, context):
         """ Client side streaming """
@@ -44,7 +39,6 @@ class GroomService(groom_pb2_grpc.GroomServicer):
         """ Server side streaming """
         print(f"Monitoring: {request}, {context}")
 
-
         # for request in request:
         #     print(f"Monitoring: {request}")
         # for cnt in range(10):
@@ -58,12 +52,20 @@ class GroomService(groom_pb2_grpc.GroomServicer):
                 yield received_message
             time.sleep(0.5)
 
+    def StartChat(self, request_iterator, context):
+        """ Bi-directional streaming """
+        for chat_message in request_iterator:
+            print(f"Chat message: {chat_message.contents} at {chat_message.msg_time}")
+            self.mq.add_chat_to_queue(chat_message)
+        return groom_pb2.ChatStreamStatus(success=True)
+
 def main():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
     groom_pb2_grpc.add_GroomServicer_to_server(GroomService(), server)
     server.add_insecure_port('[::]:50052')
     server.start()
     server.wait_for_termination()
+
 
 if __name__ == "__main__":
     main()
