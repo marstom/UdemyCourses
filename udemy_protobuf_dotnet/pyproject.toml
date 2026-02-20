@@ -1,0 +1,19 @@
+[project]
+name = "udemy-protobuf-dotnet"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13,<3.14"
+dependencies = [
+#    "grpcio==1.78.1",
+#    "grpcio-tools==1.78.1",
+    "grpcio",
+    "grpcio-tools",
+    "protobuf",
+    "faker",
+    "pytest",
+    "ipython",
+    "ipdb",
+    "invoke",
+    "watchfiles",
+]

@@ -67,7 +67,10 @@ def generate_protos(c):
 @task
 def run_groom_server(c):
     """ First run a server"""
-    c.run("python src/groom_server.py")
+    c.run(
+        "watchfiles 'python src/groom_server.py' src",
+        pty=True
+    )
 
 @task
 def run_groom_admin(c):

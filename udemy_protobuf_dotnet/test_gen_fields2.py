@@ -1,11 +1,14 @@
 # from google.protobuf.internal.well_known_types import Timestamp
 from datetime import datetime
 
-from google.protobuf.timestamp_pb2 import Timestamp
+# from google.protobuf.timestamp_pb2 import Timestamp
 
-import my_pb2
+from google.protobuf.internal.well_known_types import Timestamp
+
+
 def main():
 
+    # Timestamp
 
     player = my_pb2.Player(
         id=1,
