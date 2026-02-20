@@ -1,0 +1,20 @@
+layout {
+    pane split_direction="horizontal" {
+        pane {
+            command "inv"
+            args "run-1-groom-server"
+        }
+        pane {
+            command "inv"
+            args "run-2-groom-admin"
+        }
+        pane {
+            command "inv"
+            args "run-3-node-client"
+        }
+        pane {
+            command "inv"
+            args "run-4-chat"
+        }
+    }
+}

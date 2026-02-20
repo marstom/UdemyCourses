@@ -1,6 +1,17 @@
 
+# Info
+
+.zellij/dev.kdl to jest zestaw pane dla zellij
+
+najpierw stwórz sesję z zellij
+
+```sh
+zellij --session groom_dev
+```
+
 # Application architecture
 
+[Rysunek](./Arci.drawio)
 
 
 

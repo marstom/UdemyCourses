@@ -93,3 +93,8 @@ def run_4_chat(c):
     c.run("cd chat_client & PYTHONPATH=$(pwd) python chat_client.py", echo=True, pty=True)
 
 
+
+# Experimental zellij layout
+@task
+def dev(c):
+    c.run("zellij --session groom_dev --layout .zellij/dev.kdl", pty=True)
