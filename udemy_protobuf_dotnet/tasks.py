@@ -1,92 +1,76 @@
-from invoke import task, Collection
-import os
+from invoke import task
 
-
-
-@task
-def source(c):
-    c.run("source .venv/bin/activate")
-    c.run("export PYTHONPATH=$(pwd):$(pwd)/generated")
-
-@task
-def clean(c):
-    """Cleans pb2, but-dangerous, be careful .venv can suffer."""
-    try:
-        print("CLEANS INIT I S BAD")
-        # c.run(
-        #     """
-        #     rm -rf ./generated/*
-        #     rm -rf ./groomadmin/generated/*
-        #     """
-        # )
-    except:
-        print("Noting to revmove")
 
 @task
 def ppath(c):
     c.run("echo $PYTHONPATH")
 
 
-@task
-def _generate_grpc(c):
-    # Generate pb2 + type hints + grpc stubs into proto_output/
-    names = [os.path.join("protos", "groom.proto"), os.path.join("protos", "my.proto")]
-    for protoc_name in names:
-        
-        c.run(
-            f""" 
-            python -m grpc_tools.protoc \
-            -I ./protos \
-            --python_out=generated \
-            --grpc_python_out=generated \
-            {protoc_name}
-            """
-        )
-
-
-@task
-def _generate_grpc_groomadmin(c):
-    names = [os.path.join("protos", "groom.proto")]
-    folder = os.path.join("groomadmin", "protos")
-    folder_base = os.path.join("groomadmin")
-    for protoc_name in names:
-        c.run(
-            f""" 
-            cd groomadmin &&
-            python -m grpc_tools.protoc \
-            -I ./protos \
-            --python_out=generated \
-            --pyi_out=generated \
-            --grpc_python_out=generated \
-            {protoc_name}
-            """
-        )
-
-@task(clean, _generate_grpc, _generate_grpc_groomadmin)
+@task()
 def generate_protos(c):
     """This generates all protos"""
-    print("Protos generated")
-    # c.run("invoke generate-grpc")
-    # c.run("invoke generate-grpc-groomadmin")
+    # admin
+    c.run(
+        f""" 
+        cd groom_admin &&
+        python -m grpc_tools.protoc \
+        -I ./protos \
+        --python_out=. \
+        --pyi_out=. \
+        --grpc_python_out=. \
+        protos/groom.proto
+        """
+    )
+    print("ok")
+
+    # server
+    c.run(
+        f""" 
+        cd groom_server &&
+        python -m grpc_tools.protoc \
+        -I ./protos \
+        --python_out=. \
+        --pyi_out=. \
+        --grpc_python_out=. \
+        protos/groom.proto
+        """
+    )
+    print("ok")
+
+    # chat
+    c.run(
+        f""" 
+        cd chat_client &&
+        python -m grpc_tools.protoc \
+        -I ./protos \
+        --python_out=. \
+        --pyi_out=. \
+        --grpc_python_out=. \
+        protos/groom.proto
+        """
+    )
+    print("ok")
+    print("Protos generated!")
+
 
 ############# Services
 
 @task
-def run_groom_server(c):
+def run_1_groom_server(c):
     """ First run a server"""
     c.run(
-        "watchfiles 'python src/groom_server.py' src",
-        pty=True
+        "cd groom_server && PYTHONPATH=$(pwd) watchfiles 'python ./src/groom_server.py' src",
+        echo=True,
     )
 
 @task
-def run_groom_admin(c):
+def run_2_groom_admin(c):
     """ Second run this admin panel, it will monitor messages for you!"""
-    c.run("cd groomadmin && python monitor_chat.py", echo=True, pty=True)
+    c.run("cd groom_admin && PYTHONPATH=$(pwd) python monitor_chat.py", echo=True, pty=True)
 
 
 @task
-def run_node_client(c):
+def run_3_node_client(c):
     """
     Next run this client:
     It will push some messages to queue, so our client can display something!
@@ -94,5 +78,18 @@ def run_node_client(c):
     """
     # pty - colors
     # c.run("node newsbot/client.js", pty=True, echo=True)
-    c.run("node newsbot/client.js")
+    c.run("cd js_newsbot && node client.js")
+
+
+@task
+def run_4_chat(c):
+    """
+    Next run this client:
+    It will push some messages to queue, so our client can display something!
+    Node client which send news.
+    """
+    # pty - colors
+    # c.run("node newsbot/client.js", pty=True, echo=True)
+    c.run("cd chat_client & PYTHONPATH=$(pwd) python chat_client.py", echo=True, pty=True)
+
 

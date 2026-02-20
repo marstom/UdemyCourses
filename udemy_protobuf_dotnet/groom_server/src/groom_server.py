@@ -3,9 +3,9 @@ from concurrent import futures
 
 import grpc
 
-from generated import groom_pb2
-from generated import groom_pb2_grpc
-from src.utils.message_queue import MessagesQueue
+import groom_pb2
+import groom_pb2_grpc
+from utils.message_queue import MessagesQueue
 
 
 class GroomService(groom_pb2_grpc.GroomServicer):
