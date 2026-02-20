@@ -1,9 +1,0 @@
-protobuf>=4.25,<5
-grpcio
-grpcio-tools
-faker
-pytest
-ipython
-ipdb
-invoke
-watchfiles

@@ -10,8 +10,14 @@ def source(c):
 
 @task
 def clean(c):
+    """Cleans pb2, but-dangerous, be careful .venv can suffer."""
     try:
-        c.run("find . -type f \\( -name '*_pb2.py' -o -name '*_pb2.pyi' -o -name '*_pb2_grpc.py' \\) -delete")
+        c.run(
+            """
+            rm -rf ./generated/*
+            rm -rf ./groomadmin/generated/*
+            """
+        )
     except:
         print("Noting to revmove")
 
