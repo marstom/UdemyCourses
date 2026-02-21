@@ -1,26 +1,25 @@
 import time
 from concurrent import futures
+from typing import Iterator
 
 import grpc
 
 import groom_pb2
 import groom_pb2_grpc
 from utils.message_queue import MessagesQueue
+from utils.user_queue import UsersQueues
 
 
 class GroomService(groom_pb2_grpc.GroomServicer):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.mq = MessagesQueue()
-        self.user_queues = dict()
+        self.user_queues = UsersQueues()
 
     def RegisterToRoom(self, request, context):
         """Client side streaming to server"""
         print("Get a room")
         return groom_pb2.RoomRegistrationResponse(room_id=f"Room {request.room_name}")
-
-    # def GetGroom(self, request, context):
-    # return groom_pb2.GetGroomResponse(room_name=request.room_name)
 
     def SendNewsFlash(self, request_iterator, context):
         """ Client side streaming """
@@ -35,15 +34,9 @@ class GroomService(groom_pb2_grpc.GroomServicer):
             print(f"SendNewsFlash stream aborted: {e.code()} {e.details()}")
             return groom_pb2.NewsStreamStatus(success=False)
 
-    def StartMonitoring(self, request, context):
+    def StartMonitoring(self, request: "Empty", context):
         """ Server side streaming """
         print(f"Monitoring: {request}, {context}")
-
-        # for request in request:
-        #     print(f"Monitoring: {request}")
-        # for cnt in range(10):
-        #     yield groom_pb2.ReceivedMessage(msg_time=datetime.now(), contents=f"The test message started {cnt}", user="id__groom")
-        #     time.sleep(0.5)
 
         while True:
             if self.mq.get_message_count() > 0:
@@ -52,12 +45,22 @@ class GroomService(groom_pb2_grpc.GroomServicer):
                 yield received_message
             time.sleep(0.5)
 
-    def StartChat(self, request_iterator, context):
+    def StartChat(self, incoming_stream: Iterator[groom_pb2.ChatMessage], context: grpc.ServicerContext) -> Iterator[groom_pb2.ChatMessage]:
         """ Bi-directional streaming """
-        for chat_message in request_iterator:
-            print(f"Chat message: {chat_message.contents} at {chat_message.msg_time}")
-            self.mq.add_chat_to_queue(chat_message)
-        return groom_pb2.ChatStreamStatus(success=True)
+        print("ST")
+        while True:
+            # Wait for message...
+            first_msg = next(incoming_stream)
+            self.user_queues.create_user_queue(first_msg.room, first_msg.user)
+            # Wait for message...
+            for chat_message in incoming_stream:
+                print(f"Chat message: {chat_message.contents} at {chat_message.msg_time}")
+                self.user_queues.add_message_to_room(chat_message.room, chat_message.contents)
+
+                yield self.user_queues.get_message_for_user(chat_message.user)
+                    # yield msg
+                # yield groom_pb2.ChatMessage(msg_time=chat_message.msg_time, contents="success", user="groom")
+            # return groom_pb2.ChatStreamStatus(success=True)
 
 def main():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))

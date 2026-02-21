@@ -3,24 +3,46 @@ import queue
 
 import groom_pb2
 
-class UserQueue:
+
+
+class UsersQueues:
     def __init__(self):
+        self._queues: list[UserQueue] = []
+        self._admin_queue: list[groom_pb2.ReceivedMessage] = []
+
+    def create_user_queue(self, room: str, user: str):
+        self._queues.append(UserQueue(room=room, user=user))
+
+    def add_message_to_room(self, room: str, msg: groom_pb2.ReceivedMessage):
+        for q in self._queues:
+            if q.room == room:
+                q.add_message_to_queue(msg)
+        # self._queues[room].add_message_to_queue(msg)
+
+    def get_message_for_user(self, user: str) -> groom_pb2.ReceivedMessage | None:
+        for q in self._queues:
+            if q.user == user:
+                return q.next_message()
+        else:
+            return None
+
+    def get_admin_message(self):
+        if len(self._admin_queue) == 0:
+            return None
+        return self._admin_queue.pop(0)
+
+
+class UserQueue:
+    def __init__(self, *, room: str, user: str):
+        self.room = room
+        self.user = user
         self.queue = queue.Queue()
 
-
-    def add_user_to_queue(self, msg: groom_pb2.ReceivedMessage, room_name: str):
-        msg = groom_pb2.ReceivedMessage(
-            msg_time=u,
-            contents=news_flash.news_item,
-            user="id__groom"
-        )
+    def add_message_to_queue(self, msg: groom_pb2.ReceivedMessage):
         self.queue.put(msg)
 
-
-        # self.queue.get()
-
-    def received_message(self) -> groom_pb2.ReceivedMessage:
+    def next_message(self) -> groom_pb2.ReceivedMessage:
         return self.queue.get()
 
-    def get_message_count(self) -> int:
+    def messages_count(self) -> int:
         return self.queue.qsize()

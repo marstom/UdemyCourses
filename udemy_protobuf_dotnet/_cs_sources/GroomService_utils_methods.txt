@@ -1,0 +1,18 @@
+private ReceivedMessage ConvertToReceivedMessage(ChatMessage chatMsg)  {
+	var rcMsg = new ReceivedMessage();
+	rcMsg.Contents = chatMsg.Contents;
+	rcMsg.MsgTime = chatMsg.MsgTime;
+	rcMsg.User = chatMsg.User;
+
+	return rcMsg;
+}
+
+private ChatMessage ConvertToChatMessage(ReceivedMessage rcMsg, string room)  {
+	var chatMsg = new ChatMessage();
+	chatMsg.Contents = rcMsg.Contents;
+	chatMsg.MsgTime = rcMsg.MsgTime;
+	chatMsg.User = rcMsg.User;
+	chatMsg.Room = room;
+
+	return chatMsg;
+}
