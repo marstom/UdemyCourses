@@ -1,6 +1,10 @@
 import time
 from concurrent import futures
 from typing import Iterator
+
+from grpc_reflection.v1alpha import reflection
+# from grpc_reflection.v1alpha import reflection
+# from google.protobuf import reflection
 from icecream import ic
 
 import grpc
@@ -87,6 +91,11 @@ class GroomService(groom_pb2_grpc.GroomServicer):
 def main():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
     groom_pb2_grpc.add_GroomServicer_to_server(GroomService(), server)
+
+    SERVICE_NAMES = (groom_pb2.DESCRIPTOR.services_by_name['Groom'].full_name, )
+    logger.debug(SERVICE_NAMES)
+    reflection.enable_server_reflection(SERVICE_NAMES, server)
+
     server.add_insecure_port('[::]:50052')
     server.start()
     server.wait_for_termination()
