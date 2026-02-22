@@ -1,6 +1,7 @@
 import time
 from concurrent import futures
 from typing import Iterator
+from icecream import ic
 
 import grpc
 
@@ -9,6 +10,23 @@ import groom_pb2_grpc
 from utils.message_queue import MessagesQueue
 from utils.user_queue import UsersQueues
 
+from loguru import logger
+import sys
+
+# Remove default handler
+logger.remove()
+
+# Add colorful console output
+logger.add(
+    sys.stdout,
+    level="DEBUG",
+    format="<green>{time:HH:mm:ss}</green> | "
+           "<level>{level: <8}</level> | "
+           "<cyan>{name}</cyan>:<cyan>{function}</cyan>:<cyan>{line}</cyan>\n"
+           "<level>{message}</level>\n"
+           "",
+    colorize=True,
+)
 
 class GroomService(groom_pb2_grpc.GroomServicer):
     def __init__(self, *args, **kwargs):
@@ -37,7 +55,6 @@ class GroomService(groom_pb2_grpc.GroomServicer):
     def StartMonitoring(self, request: "Empty", context):
         """ Server side streaming """
         print(f"Monitoring: {request}, {context}")
-
         while True:
             if self.mq.get_message_count() > 0:
                 received_message = self.mq.received_message()
@@ -46,21 +63,26 @@ class GroomService(groom_pb2_grpc.GroomServicer):
             time.sleep(0.5)
 
     def StartChat(self, incoming_stream: Iterator[groom_pb2.ChatMessage], context: grpc.ServicerContext) -> Iterator[groom_pb2.ChatMessage]:
-        """ Bi-directional streaming """
-        print("ST")
-        while True:
-            # Wait for message...
-            first_msg = next(incoming_stream)
-            self.user_queues.create_user_queue(first_msg.room, first_msg.user)
-            # Wait for message...
-            for chat_message in incoming_stream:
-                print(f"Chat message: {chat_message.contents} at {chat_message.msg_time}")
-                self.user_queues.add_message_to_room(chat_message.room, chat_message.contents)
-
-                yield self.user_queues.get_message_for_user(chat_message.user)
-                    # yield msg
-                # yield groom_pb2.ChatMessage(msg_time=chat_message.msg_time, contents="success", user="groom")
-            # return groom_pb2.ChatStreamStatus(success=True)
+        """Bi-directional streaming: receive ChatMessages, broadcast to room, yield ChatMessages for this user."""
+        # first_msg = next(incoming_stream)
+        for chat_message in incoming_stream:
+            logger.debug(chat_message)
+            yield groom_pb2.ChatMessage(msg_time=chat_message.msg_time, contents=chat_message.contents, user=chat_message.user, room=chat_message.room)
+        # print(first_msg)
+        # yield first_msg
+        # first_msg = next(incoming_stream)
+        # self.user_queues.create_user_queue(first_msg.room, first_msg.user)
+        # for chat_message in incoming_stream:
+        #     print(f"Chat message: {chat_message.contents} at {chat_message.msg_time}")
+        #     self.user_queues.add_message_to_room(chat_message.room, chat_message.contents)
+        #     msg = self.user_queues.get_message_for_user(chat_message.user)
+        #     if msg is not None:
+        #         yield groom_pb2.ChatMessage(
+        #             msg_time=msg.msg_time,
+        #             contents=msg,
+        #             user=msg.user,
+        #             room=chat_message.room,
+        #         )
 
 def main():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
