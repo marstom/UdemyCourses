@@ -3,6 +3,7 @@ import queue
 
 import groom_pb2
 
+from loguru import logger
 
 
 class UsersQueues:
@@ -13,10 +14,12 @@ class UsersQueues:
     def create_user_queue(self, room: str, user: str):
         self._queues.append(UserQueue(room=room, user=user))
 
-    def add_message_to_room(self, room: str, msg: groom_pb2.ReceivedMessage):
+    def add_message_to_room(self, room: str, msg: str):
         for q in self._queues:
             if q.room == room:
                 q.add_message_to_queue(msg)
+
+        logger.debug(self._queues)
         # self._queues[room].add_message_to_queue(msg)
 
     def get_message_for_user(self, user: str) -> groom_pb2.ReceivedMessage | None:

@@ -1,21 +1,20 @@
 info:
-  name: test001
+  name: mac
   type: grpc
-  seq: 1
+  seq: 2
 
 grpc:
   url: localhost:50052
   method: /groom.Groom/StartChat
   methodType: bidi-streaming
-  protoFilePath: ../../groom_server/protos/groom.proto
   message: |-
     {
-      "contents": "Hello Im tom.",
+      "contents": "Hello Im mac.",
       "msg_time": {
         "seconds": 1708420800,
         "nanos": 0
       },
       "room": "ex",
-      "user": "Tom"
+      "user": "Mac"
     }
   auth: inherit
