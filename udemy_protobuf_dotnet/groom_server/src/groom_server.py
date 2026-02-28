@@ -38,6 +38,7 @@ class GroomService(groom_pb2_grpc.GroomServicer):
         super().__init__(*args, **kwargs)
         self.mq = MessagesQueue()
         self.user_queues = UsersQueues()
+        self.rooms = {}
 
     async def RegisterToRoom(self, request, context):
         """Client side streaming to server"""
@@ -69,43 +70,41 @@ class GroomService(groom_pb2_grpc.GroomServicer):
 
     async def StartChat(self, incoming_stream: AsyncIterator[groom_pb2.ChatMessage], context: grpc.aio.ServicerContext) -> AsyncIterator[groom_pb2.ChatMessage]:
         """Bi-directional streaming: receive ChatMessages, broadcast to room, yield ChatMessages for this user."""
-        # TODO chagt proposed aio soluiton which may be coooool!
-        logger.debug("CONNNECETED")
-        logger.debug(type(incoming_stream))
         first_message = await anext(incoming_stream)
-        logger.debug(f"First message: {first_message}")
-        self.user_queues.create_user_queue(first_message.room, first_message.user)
-        # on connect
-        async for chat_message in incoming_stream:
-            self.user_queues.add_message_to_room(chat_message.room, chat_message)
-            # on chat message send
-            logger.debug(chat_message)
-            # self.user_queues.create_user_queue(chat_message.room, chat_message.user)
-            # self.user_queues.get_message_for_user(chat_message.user)
-            # chat_message.room
-            # chat_message.user
-            # chat_message.contents
-            # chat_message.msg_time
-            yield self.user_queues.get_message_for_user(chat_message.user)
+        room = first_message.room
+        user = first_message.user
 
-            # yield groom_pb2.ChatMessage(msg_time=chat_message.msg_time, contents=chat_message.contents, user=chat_message.user, room=chat_message.room)
-            # yield groom_pb2.ChatMessage(msg_time=chat_message.msg_time, contents=chat_message.contents, user=chat_message.user, room=chat_message.room)
-            # yield groom_pb2.ChatMessage(msg_time=chat_message.msg_time, contents=chat_message.contents, user=chat_message.user, room=chat_message.room)
-        # print(first_msg)
-        # yield first_msg
-        # first_msg = next(incoming_stream)
-        # self.user_queues.create_user_queue(first_msg.room, first_msg.user)
-        # for chat_message in incoming_stream:
-        #     print(f"Chat message: {chat_message.contents} at {chat_message.msg_time}")
-        #     self.user_queues.add_message_to_room(chat_message.room, chat_message.contents)
-        #     msg = self.user_queues.get_message_for_user(chat_message.user)
-        #     if msg is not None:
-        #         yield groom_pb2.ChatMessage(
-        #             msg_time=msg.msg_time,
-        #             contents=msg,
-        #             user=msg.user,
-        #             room=chat_message.room,
-        #         )
+        logger.debug(f"First message: {first_message}")
+        self.user_queues.create_user_queue(room, user)
+        if room not in self.rooms:
+            self.rooms[room] = {}
+        user_queue = asyncio.Queue()
+        self.rooms[room][user] = user_queue
+
+        # Broadcast join message
+        await self._broadcast(room, first_message)
+
+        async def receive():
+            async for msg in incoming_stream:
+                await self._broadcast(room, msg)
+
+        # Start background receive task
+        receive_task = asyncio.create_task(receive())
+
+        try:
+            while True:
+                message = await user_queue.get()
+                yield message
+        except asyncio.CancelledError:
+            pass
+        finally:
+            receive_task.cancel()
+            del self.rooms[room][user]
+
+
+    async def _broadcast(self, room, message):
+        for queue in self.rooms[room].values():
+            await queue.put(message)
 
 async def main():
     server = grpc.aio.server(futures.ThreadPoolExecutor(max_workers=10))

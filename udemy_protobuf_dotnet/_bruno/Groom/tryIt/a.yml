@@ -5,16 +5,10 @@ info:
 
 grpc:
   url: localhost:50052
-  method: /groom.Groom/StartChat
-  methodType: bidi-streaming
+  method: /groom.Groom/RegisterToRoom
+  methodType: unary
   message: |-
     {
-      "contents": "Hello Im mac.",
-      "msg_time": {
-        "seconds": 1708420800,
-        "nanos": 0
-      },
-      "room": "ex",
-      "user": "Mac"
+      "room_name": "damnatio"
     }
   auth: inherit

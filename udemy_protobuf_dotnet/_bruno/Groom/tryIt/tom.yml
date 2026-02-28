@@ -9,7 +9,7 @@ grpc:
   methodType: bidi-streaming
   message: |-
     {
-      "contents": "Hello Im tom.",
+      "contents": "Hello Im tom.fe",
       "msg_time": {
         "seconds": 1708420800,
         "nanos": 0
