@@ -59,9 +59,13 @@ def generate_protos(c):
 def run_1_groom_server(c):
     """ First run a server"""
     c.run(
-        "cd groom_server && PYTHONPATH=$(pwd) watchfiles 'python ./src/groom_server.py' src",
+        "cd groom_server && PYTHONPATH=$(pwd) python ./src/groom_server.py",
         echo=True,
     )
+    # c.run(
+    #     "cd groom_server && PYTHONPATH=$(pwd) watchfiles 'python ./src/groom_server.py' src",
+    #     echo=True,
+    # )
 
 @task
 def run_2_groom_admin(c):

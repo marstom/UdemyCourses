@@ -1,6 +1,6 @@
 import time
 from concurrent import futures
-from typing import Iterator
+from typing import Iterator, AsyncIterator
 
 from grpc_reflection.v1alpha import reflection
 # from grpc_reflection.v1alpha import reflection
@@ -8,6 +8,7 @@ from grpc_reflection.v1alpha import reflection
 from icecream import ic
 
 import grpc
+import asyncio
 
 import groom_pb2
 import groom_pb2_grpc
@@ -38,15 +39,15 @@ class GroomService(groom_pb2_grpc.GroomServicer):
         self.mq = MessagesQueue()
         self.user_queues = UsersQueues()
 
-    def RegisterToRoom(self, request, context):
+    async def RegisterToRoom(self, request, context):
         """Client side streaming to server"""
-        print("Get a room")
-        return groom_pb2.RoomRegistrationResponse(room_id=f"Room {request.room_name}")
+        logger.debug("Get a room")
+        return groom_pb2.RoomRegistrationResponse(joined=True)
 
-    def SendNewsFlash(self, request_iterator, context):
+    async def SendNewsFlash(self, request_iterator: AsyncIterator[groom_pb2.NewsFlash], context: grpc.aio.ServicerContext) -> groom_pb2.NewsStreamStatus:
         """ Client side streaming """
         try:
-            for news_flash in request_iterator:
+            async for news_flash in request_iterator:
                 print(f"News flash: {news_flash.news_item} at {news_flash.news_time}")
                 self.mq.add_news_to_queue(news_flash)
             return groom_pb2.NewsStreamStatus(success=True)
@@ -56,7 +57,7 @@ class GroomService(groom_pb2_grpc.GroomServicer):
             print(f"SendNewsFlash stream aborted: {e.code()} {e.details()}")
             return groom_pb2.NewsStreamStatus(success=False)
 
-    def StartMonitoring(self, request: "Empty", context):
+    async def StartMonitoring(self, request: "Empty", context) -> AsyncIterator[groom_pb2.ReceivedMessage]:
         """ Server side streaming """
         print(f"Monitoring: {request}, {context}")
         while True:
@@ -66,15 +67,16 @@ class GroomService(groom_pb2_grpc.GroomServicer):
                 yield received_message
             time.sleep(0.5)
 
-    def StartChat(self, incoming_stream: Iterator[groom_pb2.ChatMessage], context: grpc.ServicerContext) -> Iterator[groom_pb2.ChatMessage]:
+    async def StartChat(self, incoming_stream: AsyncIterator[groom_pb2.ChatMessage], context: grpc.aio.ServicerContext) -> AsyncIterator[groom_pb2.ChatMessage]:
         """Bi-directional streaming: receive ChatMessages, broadcast to room, yield ChatMessages for this user."""
         # TODO chagt proposed aio soluiton which may be coooool!
         logger.debug("CONNNECETED")
-        first_message = next(incoming_stream)
+        logger.debug(type(incoming_stream))
+        first_message = await anext(incoming_stream)
         logger.debug(f"First message: {first_message}")
         self.user_queues.create_user_queue(first_message.room, first_message.user)
         # on connect
-        for chat_message in incoming_stream:
+        async for chat_message in incoming_stream:
             self.user_queues.add_message_to_room(chat_message.room, chat_message)
             # on chat message send
             logger.debug(chat_message)
@@ -105,18 +107,23 @@ class GroomService(groom_pb2_grpc.GroomServicer):
         #             room=chat_message.room,
         #         )
 
-def main():
-    server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
+async def main():
+    server = grpc.aio.server(futures.ThreadPoolExecutor(max_workers=10))
+
     groom_pb2_grpc.add_GroomServicer_to_server(GroomService(), server)
 
-    SERVICE_NAMES = (groom_pb2.DESCRIPTOR.services_by_name['Groom'].full_name, )
+    SERVICE_NAMES = (
+        groom_pb2.DESCRIPTOR.services_by_name['Groom'].full_name,
+        reflection.SERVICE_NAME
+    )
+
     logger.debug(SERVICE_NAMES)
     reflection.enable_server_reflection(SERVICE_NAMES, server)
 
     server.add_insecure_port('[::]:50052')
-    server.start()
-    server.wait_for_termination()
+    await server.start()
+    await server.wait_for_termination()
 
 
 if __name__ == "__main__":
-    main()
+    asyncio.run(main())

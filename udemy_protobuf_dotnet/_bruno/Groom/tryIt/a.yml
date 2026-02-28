@@ -1,0 +1,20 @@
+info:
+  name: a
+  type: grpc
+  seq: 3
+
+grpc:
+  url: localhost:50052
+  method: /groom.Groom/StartChat
+  methodType: bidi-streaming
+  message: |-
+    {
+      "contents": "Hello Im mac.",
+      "msg_time": {
+        "seconds": 1708420800,
+        "nanos": 0
+      },
+      "room": "ex",
+      "user": "Mac"
+    }
+  auth: inherit
