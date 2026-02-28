@@ -68,6 +68,7 @@ class GroomService(groom_pb2_grpc.GroomServicer):
 
     def StartChat(self, incoming_stream: Iterator[groom_pb2.ChatMessage], context: grpc.ServicerContext) -> Iterator[groom_pb2.ChatMessage]:
         """Bi-directional streaming: receive ChatMessages, broadcast to room, yield ChatMessages for this user."""
+        # TODO chagt proposed aio soluiton which may be coooool!
         logger.debug("CONNNECETED")
         first_message = next(incoming_stream)
         logger.debug(f"First message: {first_message}")
@@ -83,11 +84,11 @@ class GroomService(groom_pb2_grpc.GroomServicer):
             # chat_message.user
             # chat_message.contents
             # chat_message.msg_time
+            yield self.user_queues.get_message_for_user(chat_message.user)
 
             # yield groom_pb2.ChatMessage(msg_time=chat_message.msg_time, contents=chat_message.contents, user=chat_message.user, room=chat_message.room)
             # yield groom_pb2.ChatMessage(msg_time=chat_message.msg_time, contents=chat_message.contents, user=chat_message.user, room=chat_message.room)
             # yield groom_pb2.ChatMessage(msg_time=chat_message.msg_time, contents=chat_message.contents, user=chat_message.user, room=chat_message.room)
-        yield groom_pb2.ChatMessage(msg_time=chat_message.msg_time, contents="NONO", user=chat_message.user, room=chat_message.room)
         # print(first_msg)
         # yield first_msg
         # first_msg = next(incoming_stream)

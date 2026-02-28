@@ -12,7 +12,17 @@ class UsersQueues:
         self._admin_queue: list[groom_pb2.ReceivedMessage] = []
 
     def create_user_queue(self, room: str, user: str):
+
+        for q in self._queues:
+            if q.room == room:
+                return
         self._queues.append(UserQueue(room=room, user=user))
+
+    # def _get_room_queue(self, room: str):
+    #     for q in self._queues:
+    #         if q.room == room:
+    #             return q
+    #     return None
 
     def add_message_to_room(self, room: str, msg: str):
         for q in self._queues:
