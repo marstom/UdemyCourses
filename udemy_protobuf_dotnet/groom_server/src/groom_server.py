@@ -86,6 +86,7 @@ class GroomService(groom_pb2_grpc.GroomServicer):
 
         async def receive():
             async for msg in incoming_stream:
+                logger.debug(f"Received message: {msg}")
                 await self._broadcast(room, msg)
 
         # Start background receive task
