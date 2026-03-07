@@ -75,18 +75,17 @@ def run_1_groom_server(c):
         "cd groom_server && PYTHONPATH=$(pwd) python ./src/groom_server.py",
         echo=True,
     )
-    # c.run(
-    #     "cd groom_server && PYTHONPATH=$(pwd) watchfiles 'python ./src/groom_server.py' src",
-    #     echo=True,
-    # )
-@task
-def run_1b_groom_client(c):
-    """ Chat Cllient"""
-    c.run(
-        "cd chat_client && PYTHONPATH=$(pwd) python chat_client.py",
-        echo=True,
-        pty=True,
-    )
+
+
+# TODO it's not working, use nomral script
+# @task
+# def run_1b_groom_client(c):
+#     """ Chat Cllient"""
+#     c.run(
+#         "cd chat_client && PYTHONPATH=$(pwd) python chat_client.py",
+#         echo=True,
+#         pty=True,
+#     )
 
 @task
 def run_2_groom_admin(c):

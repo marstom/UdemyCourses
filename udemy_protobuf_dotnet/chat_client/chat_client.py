@@ -11,10 +11,12 @@ import groom_pb2_grpc
 
 async def main():
     logger.debug("MAIN")
+    user = await aioconsole.ainput(f"Tell user name> ")
+    room = await aioconsole.ainput(f"Tell the room> ")
     async with grpc.aio.insecure_channel("localhost:50052") as channel:
         stub = groom_pb2_grpc.GroomStub(channel)
-        user = "Tom"
-        room = "misc"
+        # user = "Tom"
+        # room = "misc"
         call = stub.StartChat()  # ← NO iterator here
         # send first message to start stream
         await call.write(
@@ -29,8 +31,8 @@ async def main():
             await call.write(
                 groom_pb2.ChatMessage(
                     contents="Hello!",
-                    user="Tom",
-                    room="r",
+                    user=user,
+                    room=room,
                     msg_time=Timestamp(seconds=int(time.time())),
                 )
             )
