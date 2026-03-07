@@ -18,4 +18,5 @@ dependencies = [
     "loguru>=0.7.3",
     "watchdog>=6.0.0",
     "grpcio-reflection>=1.78.1",
+    "aioconsole>=0.8.2",
 ]

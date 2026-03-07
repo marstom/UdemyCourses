@@ -53,6 +53,19 @@ def generate_protos(c):
     print("Protos generated!")
 
 
+
+"""
+   result = protoc.main(
+        [
+            "protoc",
+            f"-I{base_proto_path}",
+            f"-I{grpc_include}",
+            "--python_out=.",
+            "--grpc_python_out=.",
+            "THE PATH",
+        ]
+"""
+
 ############# Services
 
 @task
@@ -72,6 +85,7 @@ def run_1b_groom_client(c):
     c.run(
         "cd chat_client && PYTHONPATH=$(pwd) python chat_client.py",
         echo=True,
+        pty=True,
     )
 
 @task
