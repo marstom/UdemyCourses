@@ -38,7 +38,7 @@ async def main():
             )
 
             message_in = ""
-            while message_in != "QUIT":
+            while message_in != "q":
                 message_in = await aioconsole.ainput(f"{user}:{room}> ")
                 await call.write(
                     groom_pb2.ChatMessage(

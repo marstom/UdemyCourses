@@ -1,20 +1,28 @@
+theme "lucario"
+
 layout {
     pane split_direction="horizontal" {
         pane {
-            command "inv"
-            args "run-1-groom-server"
+            name "server"
+            command "zsh"
+            args "run_server"
+        }
+//        pane {
+//            command "zsh"
+//            args "run_admin"
+//        }
+        pane {
+            command "zsh"
+            args "run_client.sh"
         }
         pane {
-            command "inv"
-            args "run-2-groom-admin"
+            focus true
+            command "zsh"
+            args "run_client.sh"
         }
         pane {
-            command "inv"
-            args "run-3-node-client"
-        }
-        pane {
-            command "inv"
-            args "run-4-chat"
+            command "zsh"
+            args "run_client.sh"
         }
     }
 }
