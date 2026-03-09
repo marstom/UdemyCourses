@@ -13,16 +13,16 @@ layout {
 //        }
         pane {
             command "zsh"
-            args "run_client.sh"
+            args "run_client"
         }
         pane {
             focus true
             command "zsh"
-            args "run_client.sh"
+            args "run_client"
         }
         pane {
             command "zsh"
-            args "run_client.sh"
+            args "run_client"
         }
     }
 }

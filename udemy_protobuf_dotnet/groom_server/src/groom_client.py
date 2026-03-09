@@ -1,3 +1,4 @@
+import os
 from datetime import datetime
 
 import grpc
@@ -36,7 +37,8 @@ def send_news_flash():
             news_time=ts,
         )
 
-    with grpc.insecure_channel('localhost:50052') as channel:
+    host = os.environ.get("HOST", "localhost")
+    with grpc.insecure_channel(f'{host}:50052') as channel:
         stub = groom_pb2_grpc.GroomStub(channel)
         # stub = groom_pb2_grpc.GroomServiceStub(channel)
 

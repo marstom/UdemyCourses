@@ -1,0 +1,39 @@
+
+services:
+  server:
+    build:
+      context: .
+
+    command: bash ./Dockerfile_bash/server.sh
+
+    environment:
+      - UV_PROJECT_ENVIRONMENT=.virtual
+    volumes:
+      - ./:/app
+
+    ports:
+      - 50052:50052
+
+    networks:
+      - common
+
+  client:
+    build:
+      context: .
+
+    stdin_open: true # docker run -i
+    tty: true        # docker run -t
+    command: bash ./Dockerfile_bash/client.sh
+
+    environment:
+      - UV_PROJECT_ENVIRONMENT=.virtual
+      - HOST=server
+    volumes:
+      - ./:/app
+
+    networks:
+      - common
+
+
+networks:
+  common:

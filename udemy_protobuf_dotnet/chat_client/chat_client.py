@@ -1,4 +1,5 @@
 import asyncio
+import os
 import time
 
 import aioconsole
@@ -13,7 +14,8 @@ async def main():
     logger.debug("MAIN")
     user = await aioconsole.ainput(f"Tell user name> ")
     room = await aioconsole.ainput(f"Tell the room> ")
-    async with grpc.aio.insecure_channel("localhost:50052") as channel:
+    host = os.environ.get("HOST", "localhost")
+    async with grpc.aio.insecure_channel(f"{host}:50052") as channel:
         stub = groom_pb2_grpc.GroomStub(channel)
         # user = "Tom"
         # room = "misc"
