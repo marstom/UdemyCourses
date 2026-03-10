@@ -15,5 +15,4 @@ client.registerToRoom(request, {}, (err, response) => {
   }
 
   console.log(response.getJoined());
-  alert("Joined: " + response.getJoined());
 });

@@ -4,8 +4,32 @@
 <meta charset="UTF-8">
 <title>gRoom client with gRPC-Web</title>
 <script src="./dist/main.js"></script>
+  <style>
+    .chat-window {
+      width: 250px;
+      height: 150px;
+      background-color: #ccc;
+    }
+  </style>
 </head>
 <body>
   <p>Joining room...</p>
+  <div>TODO we need chat window :) </div>
+
+  <div class="chat-window" id="chat-window"></div>
+  <div><input type="text" id="room">:<input type="text" id="name"></div>
+  <div>
+    <textarea id="chat"></textarea>
+  </div>
+  <div>
+
+    <input type="button" value="Send message">
+  </div>
+
+  <script>
+    const chatWindow = document.getElementById('chat-window');
+    console.log(chatWindow);
+
+  </script>
 </body>
 </html>

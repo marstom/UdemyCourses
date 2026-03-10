@@ -12,5 +12,8 @@
         "lodash": "^4.17.23",
         "webpack": "^5.105.4",
         "webpack-cli": "^6.0.1"
+    },
+    "dependencies": {
+        "webpack-dev-server": "^5.2.3"
     }
 }

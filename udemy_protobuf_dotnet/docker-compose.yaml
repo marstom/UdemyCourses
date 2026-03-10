@@ -49,8 +49,14 @@ services:
   web:
     build:
       context: ./grpcweb_browser
+    environment:
+      - WATCHPACK_POLLING=true
+      - CHOKIDAR_USEPOLLING=true
+    volumes:
+      - ./grpcweb_browser:/app
+      - /app/node_modules
     ports:
-      - 8081:80
+      - 8081:8080
     depends_on:
       - grpcweb_proxy
     networks:
