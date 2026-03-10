@@ -1,3 +1,4 @@
 #! /bin/bash
+source init
 
 cd groom_admin && PYTHONPATH=$(pwd) python monitor_chat.py

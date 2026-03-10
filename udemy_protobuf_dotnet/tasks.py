@@ -121,4 +121,4 @@ def run_4_chat(c):
 # Experimental zellij layout
 @task
 def dev(c):
-    c.run("zellij --session groom_dev --layout .zellij/dev.kdl", pty=True)
+    c.run("zellij --session lucky-glockenspiel --layout .zellij/dev.kdl", pty=True)

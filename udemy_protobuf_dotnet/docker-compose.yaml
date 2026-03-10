@@ -34,6 +34,28 @@ services:
     networks:
       - common
 
+  grpcweb_proxy:
+    image: envoyproxy/envoy:v1.31-latest
+    command: ["envoy", "-c", "/etc/envoy/envoy.yaml", "-l", "info"]
+    volumes:
+      - ./grpcweb_browser/envoy.local.yaml:/etc/envoy/envoy.yaml:ro
+    extra_hosts:
+      - host.docker.internal:host-gateway
+    ports:
+      - 8080:8080
+    networks:
+      - common
+
+  web:
+    build:
+      context: ./grpcweb_browser
+    ports:
+      - 8081:80
+    depends_on:
+      - grpcweb_proxy
+    networks:
+      - common
+
 
 networks:
   common:

@@ -1,3 +1,4 @@
 #! /bin/bash
 
+source init
 cd groom_server && PYTHONPATH=$(pwd) python ./src/groom_server.py
