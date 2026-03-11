@@ -32,7 +32,7 @@ async def main():
         async def send_messages():
             await call.write(
                 groom_pb2.ChatMessage(
-                    contents="Hello!",
+                    contents=f"{user} jointed to {room}",
                     user=user,
                     room=room,
                     msg_time=Timestamp(seconds=int(time.time())),
@@ -44,7 +44,7 @@ async def main():
                 message_in = await aioconsole.ainput(f"{user}:{room}> ")
                 await call.write(
                     groom_pb2.ChatMessage(
-                        contents=f"Message: {message_in}",
+                        contents=message_in,
                         user=user,
                         room=room,
                         msg_time=Timestamp(seconds=int(time.time())),

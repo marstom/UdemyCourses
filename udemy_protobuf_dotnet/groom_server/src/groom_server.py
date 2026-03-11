@@ -1,5 +1,6 @@
 import time
 from concurrent import futures
+import signal
 from typing import Iterator, AsyncIterator
 
 from grpc_reflection.v1alpha import reflection
@@ -68,94 +69,101 @@ class GroomService(groom_pb2_grpc.GroomServicer):
                 yield received_message
             time.sleep(0.5)
 
-    # async def StartChat(self, incoming_stream: AsyncIterator[groom_pb2.ChatMessage], context: grpc.aio.ServicerContext) -> AsyncIterator[groom_pb2.ChatMessage]:
-    #     """Bi-directional streaming: receive ChatMessages, broadcast to room, yield ChatMessages for this user."""
+    async def StartChat(self, incoming_stream: AsyncIterator[groom_pb2.ChatMessage], context: grpc.aio.ServicerContext) -> AsyncIterator[groom_pb2.ChatMessage]:
+        """Bi-directional streaming: receive ChatMessages, broadcast to room, yield ChatMessages for this user."""
+        logger.debug("Toms chat impl")
+        first_message = await anext(incoming_stream)
+        room = first_message.room
+        user = first_message.user
+
+        logger.debug(f"First message: {first_message}")
+        self.user_queues.create_user_queue(room, user)
+        # user_queue = asyncio.Queue()
+        # self.rooms[room][user] = user_queue
+        if room not in self.rooms:
+            self.rooms[room] = {}
+        user_queue = asyncio.Queue()
+        self.rooms[room][user] = user_queue
+
+        # Broadcast join message
+        await self._broadcast(room, first_message)
+
+        async def receive():
+            async for msg in incoming_stream:
+                logger.debug(f"Received message: {msg}")
+                logger.debug("TOMTOTMOTTMTOMTM")
+                if msg.contents == "EXIT":
+                    logger.info("Quitting....")
+                    break
+                await self._broadcast(room, msg)
+
+        # Start background receive task
+        receive_task = asyncio.create_task(receive())
+
+        try:
+            while True:
+                message = await user_queue.get()
+                if message is None:
+                    break
+                yield message
+        except asyncio.CancelledError:
+            logger.warning("Message cancelled!")
+        finally:
+            receive_task.cancel()
+            del self.rooms[room][user]
+
+
+
+    # async def __StartChat(
+    #     self,
+    #     incoming_stream: AsyncIterator[groom_pb2.ChatMessage],
+    #     context: grpc.aio.ServicerContext
+    # ) -> AsyncIterator[groom_pb2.ChatMessage]:
+    #
     #     first_message = await anext(incoming_stream)
     #     room = first_message.room
     #     user = first_message.user
     #
     #     logger.debug(f"First message: {first_message}")
-    #     self.user_queues.create_user_queue(room, user)
-    #     # user_queue = asyncio.Queue()
-    #     # self.rooms[room][user] = user_queue
+    #
     #     if room not in self.rooms:
     #         self.rooms[room] = {}
+    #
     #     user_queue = asyncio.Queue()
     #     self.rooms[room][user] = user_queue
-    #
-    #     # Broadcast join message
-    #     await self._broadcast(room, first_message)
     #
     #     async def receive():
     #         async for msg in incoming_stream:
     #             logger.debug(f"Received message: {msg}")
     #             await self._broadcast(room, msg)
     #
-    #     # Start background receive task
     #     receive_task = asyncio.create_task(receive())
+    #
+    #     # broadcast join AFTER receive task starts
+    #     await self._broadcast(room, first_message)
     #
     #     try:
     #         while True:
     #             message = await user_queue.get()
     #             yield message
+    #
     #     except asyncio.CancelledError:
     #         pass
+    #
     #     finally:
     #         receive_task.cancel()
+    #
     #         del self.rooms[room][user]
-
-
-
-    async def StartChat(
-        self,
-        incoming_stream: AsyncIterator[groom_pb2.ChatMessage],
-        context: grpc.aio.ServicerContext
-    ) -> AsyncIterator[groom_pb2.ChatMessage]:
-
-        first_message = await anext(incoming_stream)
-        room = first_message.room
-        user = first_message.user
-
-        logger.debug(f"First message: {first_message}")
-
-        if room not in self.rooms:
-            self.rooms[room] = {}
-
-        user_queue = asyncio.Queue()
-        self.rooms[room][user] = user_queue
-
-        async def receive():
-            async for msg in incoming_stream:
-                logger.debug(f"Received message: {msg}")
-                await self._broadcast(room, msg)
-
-        receive_task = asyncio.create_task(receive())
-
-        # broadcast join AFTER receive task starts
-        await self._broadcast(room, first_message)
-
-        try:
-            while True:
-                message = await user_queue.get()
-                yield message
-
-        except asyncio.CancelledError:
-            pass
-
-        finally:
-            receive_task.cancel()
-
-            del self.rooms[room][user]
-
-            # optional leave message
-            leave_msg = groom_pb2.ChatMessage(
-                contents=f"{user} left",
-                user="system",
-                room=room
-            )
-
-            await self._broadcast(room, leave_msg)
-
+    #
+    #         # optional leave message
+    #         leave_msg = groom_pb2.ChatMessage(
+    #             contents=f"{user} left",
+    #             user="system",
+    #             room=room
+    #         )
+    #
+    #         await self._broadcast(room, leave_msg)
+    #
 
     async def _broadcast(self, room, message):
         for queue in self.rooms[room].values():
@@ -175,9 +183,23 @@ async def main():
     logger.debug(SERVICE_NAMES)
     reflection.enable_server_reflection(SERVICE_NAMES, server)
 
-    server.add_insecure_port('[::]:50052')
+    listen_addr = "[::]:50052"
+    server.add_insecure_port(listen_addr)
     await server.start()
-    await server.wait_for_termination()
+    logger.info(f"Server started on {listen_addr}")
+
+    stop_event = asyncio.Event()
+    loop = asyncio.get_running_loop()
+    def shutdown():
+        logger.info("Shutdown signal received.")
+        stop_event.set()
+    loop.add_signal_handler(signal.SIGTERM, shutdown)
+    loop.add_signal_handler(signal.SIGINT, shutdown)
+    await stop_event.wait()
+    logger.info("Stopping GRPC server...")
+    await server.stop(grace=5)
+    logger.info("Server stopped.")
+    # await server.wait_for_termination()
 
 
 if __name__ == "__main__":
