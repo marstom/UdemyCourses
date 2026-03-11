@@ -1,4 +1,3 @@
-import asyncio
 import datetime
 import logging
 import time
@@ -7,7 +6,8 @@ from concurrent import futures
 import grpc
 from google.protobuf.timestamp_pb2 import Timestamp
 
-import my_pb2_grpc, my_pb2
+import my_pb2_grpc
+import my_pb2
 
 from faker import Faker
 
@@ -58,7 +58,7 @@ class BackpackManager(my_pb2_grpc.BackpackManagerServicer):
             print(request)
             self.items.append(request.item_name)
             time.sleep(0.5)
-        return my_pb2.PackResponse(added=f"OK!")
+        return my_pb2.PackResponse(added="OK!")
 
     def pack_and_immediately_show_id(self, request_iter, context):
         """

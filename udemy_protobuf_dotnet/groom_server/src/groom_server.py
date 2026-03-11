@@ -1,13 +1,12 @@
 import time
 from concurrent import futures
 import signal
-from typing import Iterator, AsyncIterator
+from typing import AsyncIterator
 
 from grpc_reflection.v1alpha import reflection
 
 # from grpc_reflection.v1alpha import reflection
 # from google.protobuf import reflection
-from icecream import ic
 
 import grpc
 import asyncio

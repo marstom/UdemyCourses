@@ -11,7 +11,7 @@ def generate_protos(c):
     """This generates all protos"""
     # admin
     c.run(
-        f""" 
+        """ 
         cd groom_admin &&
         python -m grpc_tools.protoc \
         -I ./protos \
@@ -25,7 +25,7 @@ def generate_protos(c):
 
     # server
     c.run(
-        f""" 
+        """ 
         cd groom_server &&
         python -m grpc_tools.protoc \
         -I ./protos \
@@ -39,7 +39,7 @@ def generate_protos(c):
 
     # chat
     c.run(
-        f""" 
+        """ 
         cd chat_client &&
         python -m grpc_tools.protoc \
         -I ./protos \

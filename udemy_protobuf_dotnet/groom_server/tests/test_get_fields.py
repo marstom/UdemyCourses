@@ -5,7 +5,6 @@ from google.protobuf.json_format import MessageToJson, MessageToDict, ParseDict,
 import json
 from datetime import datetime
 
-from icecream import ic
 
 
 def main():

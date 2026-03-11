@@ -1,5 +1,4 @@
 import asyncio
-import queue
 
 import groom_pb2
 

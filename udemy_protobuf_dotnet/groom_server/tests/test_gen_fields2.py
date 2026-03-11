@@ -1,9 +1,7 @@
 # from google.protobuf.internal.well_known_types import Timestamp
-from datetime import datetime
 
 # from google.protobuf.timestamp_pb2 import Timestamp
 
-from google.protobuf.internal.well_known_types import Timestamp
 
 
 def main():
