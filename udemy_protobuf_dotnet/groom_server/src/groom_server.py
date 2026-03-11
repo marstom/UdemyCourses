@@ -4,6 +4,7 @@ import signal
 from typing import Iterator, AsyncIterator
 
 from grpc_reflection.v1alpha import reflection
+
 # from grpc_reflection.v1alpha import reflection
 # from google.protobuf import reflection
 from icecream import ic
@@ -27,12 +28,13 @@ logger.add(
     sys.stdout,
     level="DEBUG",
     format="<green>{time:HH:mm:ss}</green> | "
-           "<level>{level: <8}</level> | "
-           "<cyan>{name}</cyan>:<cyan>{function}</cyan>:<cyan>{line}</cyan>\n"
-           "<level>{message}</level>\n"
-           "",
+    "<level>{level: <8}</level> | "
+    "<cyan>{name}</cyan>:<cyan>{function}</cyan>:<cyan>{line}</cyan>\n"
+    "<level>{message}</level>\n"
+    "",
     colorize=True,
 )
+
 
 class GroomService(groom_pb2_grpc.GroomServicer):
     def __init__(self, *args, **kwargs):
@@ -46,8 +48,12 @@ class GroomService(groom_pb2_grpc.GroomServicer):
         logger.debug("Get a room")
         return groom_pb2.RoomRegistrationResponse(joined=True)
 
-    async def SendNewsFlash(self, request_iterator: AsyncIterator[groom_pb2.NewsFlash], context: grpc.aio.ServicerContext) -> groom_pb2.NewsStreamStatus:
-        """ Client side streaming """
+    async def SendNewsFlash(
+        self,
+        request_iterator: AsyncIterator[groom_pb2.NewsFlash],
+        context: grpc.aio.ServicerContext,
+    ) -> groom_pb2.NewsStreamStatus:
+        """Client side streaming"""
         try:
             async for news_flash in request_iterator:
                 print(f"News flash: {news_flash.news_item} at {news_flash.news_time}")
@@ -59,8 +65,10 @@ class GroomService(groom_pb2_grpc.GroomServicer):
             print(f"SendNewsFlash stream aborted: {e.code()} {e.details()}")
             return groom_pb2.NewsStreamStatus(success=False)
 
-    async def StartMonitoring(self, request: "Empty", context) -> AsyncIterator[groom_pb2.ReceivedMessage]:
-        """ Server side streaming """
+    async def StartMonitoring(
+        self, request: "Empty", context
+    ) -> AsyncIterator[groom_pb2.ReceivedMessage]:
+        """Server side streaming"""
         print(f"Monitoring: {request}, {context}")
         while True:
             if self.mq.get_message_count() > 0:
@@ -69,7 +77,11 @@ class GroomService(groom_pb2_grpc.GroomServicer):
                 yield received_message
             time.sleep(0.5)
 
-    async def StartChat(self, incoming_stream: AsyncIterator[groom_pb2.ChatMessage], context: grpc.aio.ServicerContext) -> AsyncIterator[groom_pb2.ChatMessage]:
+    async def StartChat(
+        self,
+        incoming_stream: AsyncIterator[groom_pb2.ChatMessage],
+        context: grpc.aio.ServicerContext,
+    ) -> AsyncIterator[groom_pb2.ChatMessage]:
         """Bi-directional streaming: receive ChatMessages, broadcast to room, yield ChatMessages for this user."""
         logger.debug("Toms chat impl")
         first_message = await anext(incoming_stream)
@@ -112,59 +124,6 @@ class GroomService(groom_pb2_grpc.GroomServicer):
             receive_task.cancel()
             del self.rooms[room][user]
 
-
-
-    # async def __StartChat(
-    #     self,
-    #     incoming_stream: AsyncIterator[groom_pb2.ChatMessage],
-    #     context: grpc.aio.ServicerContext
-    # ) -> AsyncIterator[groom_pb2.ChatMessage]:
-    #
-    #     first_message = await anext(incoming_stream)
-    #     room = first_message.room
-    #     user = first_message.user
-    #
-    #     logger.debug(f"First message: {first_message}")
-    #
-    #     if room not in self.rooms:
-    #         self.rooms[room] = {}
-    #
-    #     user_queue = asyncio.Queue()
-    #     self.rooms[room][user] = user_queue
-    #
-    #     async def receive():
-    #         async for msg in incoming_stream:
-    #             logger.debug(f"Received message: {msg}")
-    #             await self._broadcast(room, msg)
-    #
-    #     receive_task = asyncio.create_task(receive())
-    #
-    #     # broadcast join AFTER receive task starts
-    #     await self._broadcast(room, first_message)
-    #
-    #     try:
-    #         while True:
-    #             message = await user_queue.get()
-    #             yield message
-    #
-    #     except asyncio.CancelledError:
-    #         pass
-    #
-    #     finally:
-    #         receive_task.cancel()
-    #
-    #         del self.rooms[room][user]
-    #
-    #         # optional leave message
-    #         leave_msg = groom_pb2.ChatMessage(
-    #             contents=f"{user} left",
-    #             user="system",
-    #             room=room
-    #         )
-    #
-    #         await self._broadcast(room, leave_msg)
-    #
-
     async def _broadcast(self, room, message):
         for queue in self.rooms[room].values():
             await queue.put(message)
@@ -176,8 +135,8 @@ async def main():
     groom_pb2_grpc.add_GroomServicer_to_server(GroomService(), server)
 
     SERVICE_NAMES = (
-        groom_pb2.DESCRIPTOR.services_by_name['Groom'].full_name,
-        reflection.SERVICE_NAME
+        groom_pb2.DESCRIPTOR.services_by_name["Groom"].full_name,
+        reflection.SERVICE_NAME,
     )
 
     logger.debug(SERVICE_NAMES)
@@ -190,9 +149,11 @@ async def main():
 
     stop_event = asyncio.Event()
     loop = asyncio.get_running_loop()
+
     def shutdown():
         logger.info("Shutdown signal received.")
         stop_event.set()
+
     loop.add_signal_handler(signal.SIGTERM, shutdown)
     loop.add_signal_handler(signal.SIGINT, shutdown)
     await stop_event.wait()

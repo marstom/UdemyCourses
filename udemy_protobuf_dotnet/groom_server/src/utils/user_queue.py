@@ -54,7 +54,6 @@ class UserQueue:
     async def add_message_to_queue(self, msg: groom_pb2.ReceivedMessage):
         await self.queue.put(msg)
 
-
     async def next_message(self) -> groom_pb2.ReceivedMessage:
         return await self.queue.get()
 

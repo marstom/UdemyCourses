@@ -10,6 +10,7 @@ from loguru import logger
 import groom_pb2
 import groom_pb2_grpc
 
+
 async def main():
     logger.debug("MAIN")
     user = await aioconsole.ainput(f"Tell user name> ")
@@ -29,6 +30,7 @@ async def main():
                 msg_time=Timestamp(seconds=int(time.time())),
             )
         )
+
         async def send_messages():
             await call.write(
                 groom_pb2.ChatMessage(
@@ -57,7 +59,6 @@ async def main():
                 print(f"📨 Received: {response.user} {response.contents}")
 
         await asyncio.gather(send_messages(), receive_messages())
-
 
 
 if __name__ == "__main__":

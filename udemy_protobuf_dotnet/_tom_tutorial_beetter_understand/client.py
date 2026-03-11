@@ -37,6 +37,7 @@ def create_requests():
     for i in range(5):
         yield my_pb2.PackReqest(item_name=f"ajtem {i}")
 
+
 @cli.async_command()
 async def continous_pack_items():
     """
@@ -71,11 +72,14 @@ async def bi_directonal_pack_and_show():
     async with grpc.aio.insecure_channel("localhost:50051") as channel:
         stub = my_pb2_grpc.BackpackManagerStub(channel)
         # requests_iterator = create_requests()
-        requests_iterator = (my_pb2.PackReqest(item_name=f"ajtemxla {i}") for i in range(3))
+        requests_iterator = (
+            my_pb2.PackReqest(item_name=f"ajtemxla {i}") for i in range(3)
+        )
         print(requests_iterator)
         response_iter = stub.pack_and_immediately_show_id(requests_iterator)
         async for response in response_iter:
             print(response)
+
 
 @cli.async_command()
 async def bi_directonal_unpack_and_show(idx: list[int]):
@@ -86,10 +90,13 @@ async def bi_directonal_unpack_and_show(idx: list[int]):
 
     async with grpc.aio.insecure_channel("localhost:50051") as channel:
         stub = my_pb2_grpc.BackpackManagerStub(channel)
-        requests_iterator = (my_pb2.UnpackIdxRequest(item_idx=i) for i in idx) # Better is repeated, but its for tutorial purposes
+        requests_iterator = (
+            my_pb2.UnpackIdxRequest(item_idx=i) for i in idx
+        )  # Better is repeated, but its for tutorial purposes
         response_iter = stub.unpack_and_immediately_show(requests_iterator)
         async for response in response_iter:
             print(response)
+
 
 async def main():
     await unpack()

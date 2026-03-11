@@ -8,6 +8,7 @@ import groom_pb2_grpc
 # Match C#: http://localhost:5054 (use 50052 if your groom server runs there)
 SERVER_ADDRESS = "localhost:50052"
 
+
 #
 # async def monitor():
 #     async with grpc.aio.insecure_channel(SERVER_ADDRESS) as channel:
@@ -26,8 +27,11 @@ def monitor():
         for msg in client.StartMonitoring(empty_pb2.Empty()):
             print(msg)
 
+
 def main():
     monitor()  # IMPORTANT: await, don't fire-and-forget
+
+
 # async def main():
 #     print("*** Admin Console started ***")
 #     print("Listening...")

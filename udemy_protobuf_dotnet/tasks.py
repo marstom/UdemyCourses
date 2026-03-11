@@ -53,7 +53,6 @@ def generate_protos(c):
     print("Protos generated!")
 
 
-
 """
    result = protoc.main(
         [
@@ -68,9 +67,10 @@ def generate_protos(c):
 
 ############# Services
 
+
 @task
 def run_1_groom_server(c):
-    """ First run a server"""
+    """First run a server"""
     c.run(
         "cd groom_server && PYTHONPATH=$(pwd) python ./src/groom_server.py",
         echo=True,
@@ -87,10 +87,15 @@ def run_1_groom_server(c):
 #         pty=True,
 #     )
 
+
 @task
 def run_2_groom_admin(c):
-    """ Second run this admin panel, it will monitor messages for you!"""
-    c.run("cd groom_admin && PYTHONPATH=$(pwd) python monitor_chat.py", echo=True, pty=True)
+    """Second run this admin panel, it will monitor messages for you!"""
+    c.run(
+        "cd groom_admin && PYTHONPATH=$(pwd) python monitor_chat.py",
+        echo=True,
+        pty=True,
+    )
 
 
 @task
@@ -114,8 +119,9 @@ def run_4_chat(c):
     """
     # pty - colors
     # c.run("node newsbot/client.js", pty=True, echo=True)
-    c.run("cd chat_client & PYTHONPATH=$(pwd) python chat_client.py", echo=True, pty=True)
-
+    c.run(
+        "cd chat_client & PYTHONPATH=$(pwd) python chat_client.py", echo=True, pty=True
+    )
 
 
 # Experimental zellij layout

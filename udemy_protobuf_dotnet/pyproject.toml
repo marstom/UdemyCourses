@@ -19,4 +19,5 @@ dependencies = [
     "watchdog>=6.0.0",
     "grpcio-reflection>=1.78.1",
     "aioconsole>=0.8.2",
+    "ruff>=0.15.5",
 ]

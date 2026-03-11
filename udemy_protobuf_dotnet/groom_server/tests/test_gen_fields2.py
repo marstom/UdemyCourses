@@ -24,7 +24,6 @@ def main():
     )
     # print(player)
 
-
     player.previous_games.append("Game 4")
     print(player)
     print(player.status == my_pb2.Player.Status.NEW)
@@ -34,7 +33,6 @@ def main():
 
     player.inventory["gem"] = 2
     print(adr)
-
 
 
 if __name__ == "__main__":
