@@ -39,7 +39,7 @@ class GroomService(groom_pb2_grpc.GroomServicer):
         super().__init__(*args, **kwargs)
         self.mq = MessagesQueue()
         self.user_queues = UsersQueues()
-        self.rooms = {}
+        self.rooms: dict[str, dict[str, asyncio.Queue]] = {}
 
     async def RegisterToRoom(self, request, context):
         """Client side streaming to server"""
@@ -199,7 +199,6 @@ async def main():
     logger.info("Stopping GRPC server...")
     await server.stop(grace=5)
     logger.info("Server stopped.")
-    # await server.wait_for_termination()
 
 
 if __name__ == "__main__":
