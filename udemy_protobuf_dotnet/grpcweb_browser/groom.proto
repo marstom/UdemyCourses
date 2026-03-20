@@ -1,5 +1,7 @@
 syntax = "proto3";
 
+import "google/protobuf/timestamp.proto";
+
 package groom;
 
 message RoomRegistrationRequest  {
@@ -12,6 +14,19 @@ message RoomRegistrationResponse  {
 }
 
 
+// Chattting
+//message ChatMessage{
+//    google.protobuf.Timestamp msg_time = 1;
+//    string contents = 2;
+//    string user = 3;
+//    string room = 4;
+//}
+
+
+
+
 service Groom  {
-    rpc RegisterToRoom(RoomRegistrationRequest) returns (RoomRegistrationResponse);    
+    rpc RegisterToRoom(RoomRegistrationRequest) returns (RoomRegistrationResponse);
+//    rpc StartChat (stream ChatMessage) returns (stream ChatMessage); // WEB has not bi-dir streaming
+    // this is the limitation of gRPC-Web
 }

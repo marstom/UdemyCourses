@@ -6,7 +6,6 @@ import json
 from datetime import datetime
 
 
-
 def main():
     print("=" * 60)
     print("1. CREATING A PLAYER")

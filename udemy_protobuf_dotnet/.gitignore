@@ -4,3 +4,7 @@
 *_pb2.py
 *_pb2.pyi
 *_pb2_grpc.py
+
+.venv/
+.virtual/
+/grpcweb_browser/groom_grpc_web_pb.js

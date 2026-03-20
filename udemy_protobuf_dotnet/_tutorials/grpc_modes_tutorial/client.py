@@ -1,9 +1,8 @@
-
 import grpc
 
 # import typer
 import async_typer
-from generated import my_pb2_grpc, my_pb2
+import my_pb2_grpc, my_pb2
 
 cli = async_typer.AsyncTyper()
 

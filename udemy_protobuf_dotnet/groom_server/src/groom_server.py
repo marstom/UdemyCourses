@@ -3,10 +3,8 @@ from concurrent import futures
 import signal
 from typing import AsyncIterator
 
+from google.protobuf.timestamp_pb2 import Timestamp
 from grpc_reflection.v1alpha import reflection
-
-# from grpc_reflection.v1alpha import reflection
-# from google.protobuf import reflection
 
 import grpc
 import asyncio
@@ -70,11 +68,13 @@ class GroomService(groom_pb2_grpc.GroomServicer):
         """Server side streaming"""
         print(f"Monitoring: {request}, {context}")
         while True:
-            if self.mq.get_message_count() > 0:
+            mc = self.mq.get_message_count()
+            print(mc)
+            if mc > 0:
                 received_message = self.mq.received_message()
                 print(received_message)
                 yield received_message
-            time.sleep(0.5)
+            await asyncio.sleep(0.5)
 
     async def StartChat(
         self,
@@ -88,9 +88,7 @@ class GroomService(groom_pb2_grpc.GroomServicer):
         user = first_message.user
 
         logger.debug(f"First message: {first_message}")
-        self.user_queues.create_user_queue(room, user)
-        # user_queue = asyncio.Queue()
-        # self.rooms[room][user] = user_queue
+        # self.user_queues.create_user_queue(room, user) # TODO use this instead of self.rooms
         if room not in self.rooms:
             self.rooms[room] = {}
         user_queue = asyncio.Queue()
@@ -99,29 +97,22 @@ class GroomService(groom_pb2_grpc.GroomServicer):
         # Broadcast join message
         await self._broadcast(room, first_message)
 
-        async def receive():
+        async def receive_room_message():
             async for msg in incoming_stream:
                 logger.debug(f"Received message: {msg}")
-                logger.debug("TOMTOTMOTTMTOMTM")
                 if msg.contents == "EXIT":
                     logger.info("Quitting....")
                     break
                 await self._broadcast(room, msg)
 
         # Start background receive task
-        receive_task = asyncio.create_task(receive())
+        asyncio.create_task(receive_room_message())
 
-        try:
-            while True:
-                message = await user_queue.get()
-                if message is None:
-                    break
-                yield message
-        except asyncio.CancelledError:
-            logger.warning("Message cancelled!")
-        finally:
-            receive_task.cancel()
-            del self.rooms[room][user]
+        while True:
+            message = await self.rooms[room][user].get()
+            if message is None:
+                break
+            yield message
 
     async def _broadcast(self, room, message):
         for queue in self.rooms[room].values():
@@ -157,7 +148,6 @@ async def main():
     loop.add_signal_handler(signal.SIGINT, shutdown)
     await stop_event.wait()
     logger.info("Stopping GRPC server...")
-    await server.stop(grace=5)
     logger.info("Server stopped.")
 
 

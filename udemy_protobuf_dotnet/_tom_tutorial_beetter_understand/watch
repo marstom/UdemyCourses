@@ -1,2 +1,0 @@
-# /bin/bash
-watchfiles "python server.py"

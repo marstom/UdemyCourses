@@ -17,7 +17,7 @@ dependencies = [
     "icecream>=2.1.10",
     "loguru>=0.7.3",
     "watchdog>=6.0.0",
-    "grpcio-reflection>=1.78.1",
+    "grpcio-reflection>=1.78.0",
     "aioconsole>=0.8.2",
     "ruff>=0.15.5",
 ]

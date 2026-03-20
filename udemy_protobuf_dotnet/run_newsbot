@@ -1,0 +1,3 @@
+#! /bin/bash
+
+cd js_newsbot && npm i && node client.js
