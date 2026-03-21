@@ -1,9 +1,7 @@
-# from google.protobuf.internal.well_known_types import Timestamp
 
-# from google.protobuf.timestamp_pb2 import Timestamp
+import my_pb2
 
-
-def main():
+def test_player_generate_fields():
 
     # Timestamp
 

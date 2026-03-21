@@ -6,7 +6,7 @@ import json
 from datetime import datetime
 
 
-def main():
+def test_protobuf_fields_generation():
     print("=" * 60)
     print("1. CREATING A PLAYER")
     print("=" * 60)

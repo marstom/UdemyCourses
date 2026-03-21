@@ -32,7 +32,7 @@ def generate_protos(c):
         --python_out=. \
         --pyi_out=. \
         --grpc_python_out=. \
-        protos/groom.proto
+        protos/*.proto
         """
     )
     print("ok")
@@ -124,7 +124,11 @@ def run_4_chat(c):
     )
 
 
-# Experimental zellij layout
+# Experimental zellij layout, please change groom_dev to your session name if you have different
 @task
 def dev(c):
-    c.run("zellij --session lucky-glockenspiel --layout .zellij/dev.kdl", pty=True)
+    c.run("zellij --session groom_dev --layout .zellij/dev.kdl", pty=True)
+
+@task
+def test(c):
+    c.run("pytest -vvs .")

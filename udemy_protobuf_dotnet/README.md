@@ -25,18 +25,26 @@ source init # initialize venv and set PYTHONPATH
 ```
 Connands are also availabe via invoke
 
+If you have zellij terminal then:
+`inv run` will render 4panes with services!
+
+If you prefer, docker compose is also available. (Make it later AWS deployable)
+
 to enable invoke completion run:
 ```sh
 eval "$(invoke --print-completion-script zsh)"
 ```
 
+
+Testing:
+`inv test`
+
+
 ### Postman/Bruno
 To load methods user server-reflection.
 
 
-
 ### Frontend
-
 
 ```sh
 cd ./newsbot
@@ -44,6 +52,9 @@ node client.js
 ```
 Url is:
 http://localhost:8081
+
+
+But currently browsers does not handle bi-dir streams.
 
 # Project services
 
