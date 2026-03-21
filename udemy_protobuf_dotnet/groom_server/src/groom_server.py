@@ -1,9 +1,7 @@
-import time
 from concurrent import futures
 import signal
 from typing import AsyncIterator
 
-from google.protobuf.timestamp_pb2 import Timestamp
 from grpc_reflection.v1alpha import reflection
 
 import grpc
@@ -12,8 +10,8 @@ import asyncio
 import groom_pb2
 import groom_pb2_grpc
 from utils.message_queue import MessagesQueue
-from utils.user_queue import UsersQueues
 
+from utils.user_queue import Rooms
 from loguru import logger
 import sys
 
@@ -37,8 +35,9 @@ class GroomService(groom_pb2_grpc.GroomServicer):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.mq = MessagesQueue()
-        self.user_queues = UsersQueues()
-        self.rooms: dict[str, dict[str, asyncio.Queue]] = {}
+        # self.rooms: dict[str, dict[str, asyncio.Queue]] = {}
+
+        self.rooms = Rooms()
 
     async def RegisterToRoom(self, request, context):
         """Client side streaming to server"""
@@ -84,18 +83,19 @@ class GroomService(groom_pb2_grpc.GroomServicer):
         """Bi-directional streaming: receive ChatMessages, broadcast to room, yield ChatMessages for this user."""
         logger.debug("Toms chat impl")
         first_message = await anext(incoming_stream)
-        room = first_message.room
-        user = first_message.user
-
+        # room = first_message.room
+        user_name = first_message.user
         logger.debug(f"First message: {first_message}")
-        # self.user_queues.create_user_queue(room, user) # TODO use this instead of self.rooms
-        if room not in self.rooms:
-            self.rooms[room] = {}
-        user_queue = asyncio.Queue()
-        self.rooms[room][user] = user_queue
+        self.rooms.add_user_to_room(first_message.room, user_name)
+        # if room not in self.rooms:
+        # self.rooms[room] = {}
+        # user_queue = asyncio.Queue()
+        # self.rooms[room][user] = user_queue
 
         # Broadcast join message
-        await self._broadcast(room, first_message)
+        # await self._broadcast(room, first_message)
+        room = self.rooms.get_room(first_message.room)
+        await room.boradcast_to_room(first_message)
 
         async def receive_room_message():
             async for msg in incoming_stream:
@@ -103,13 +103,17 @@ class GroomService(groom_pb2_grpc.GroomServicer):
                 if msg.contents == "EXIT":
                     logger.info("Quitting....")
                     break
-                await self._broadcast(room, msg)
+                # await self._broadcast(room, msg)
+                room = self.rooms.get_room(msg.room)
+                await room.boradcast_to_room(msg)
 
         # Start background receive task
         asyncio.create_task(receive_room_message())
 
         while True:
-            message = await self.rooms[room][user].get()
+            # message = await self.rooms[room][user].get()
+            message = await room.get_user_message(user_name)
+
             if message is None:
                 break
             yield message

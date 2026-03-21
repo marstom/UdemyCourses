@@ -2,59 +2,49 @@ import asyncio
 
 import groom_pb2
 
-from loguru import logger
 
 
-class UsersQueues:
-    def __init__(self):
-        self._queues: list[UserQueue] = []
-        self._admin_queue = asyncio.Queue()
-        # self._admin_queue: list[groom_pb2.ReceivedMessage] = []
-
-    def create_user_queue(self, room: str, user: str):
-
-        for q in self._queues:
-            if q.room == room:
-                return
-        self._queues.append(UserQueue(room=room, user=user))
-
-    # def _get_room_queue(self, room: str):
-    #     for q in self._queues:
-    #         if q.room == room:
-    #             return q
-    #     return None
-
-    async def add_message_to_room(self, room: str, msg: str):
-        for q in self._queues:
-            if q.room == room:
-                await q.add_message_to_queue(msg)
-
-        logger.debug(self._queues)
-
-    async def get_message_for_user(self, user: str) -> groom_pb2.ReceivedMessage | None:
-        for q in self._queues:
-            if q.user == user:
-                return await q.next_message()
-        else:
-            return None
-
-    async def get_admin_message(self):
-        if self._admin_queue.qsize() == 0:
-            return None
-        return await self._admin_queue.get()
-
-
-class UserQueue:
-    def __init__(self, *, room: str, user: str):
+class Room:
+    def __init__(self, room: str):
         self.room = room
-        self.user = user
-        self.queue = asyncio.Queue()
+        self.users: dict[str, asyncio.Queue] = {}
+        self.messages: list[groom_pb2.ReceivedMessage] = []
 
-    async def add_message_to_queue(self, msg: groom_pb2.ReceivedMessage):
-        await self.queue.put(msg)
+    def add_user(self, user: str):
+        self.users[user] = asyncio.Queue()
 
-    async def next_message(self) -> groom_pb2.ReceivedMessage:
-        return await self.queue.get()
+    async def add_message(self, message: groom_pb2.ReceivedMessage):
+        for user in self.users.values():
+            await user.put(message)
 
-    def messages_count(self) -> int:
-        return self.queue.qsize()
+    async def boradcast_to_room(self, message: groom_pb2.ReceivedMessage):
+        for user in self.users.values():
+            await user.put(message)
+
+    async def get_all_users_messages(self) -> list[groom_pb2.ReceivedMessage]:
+        messages = []
+        for user in self.users.values():
+            messages.append(await user.get())
+        return messages
+
+    async def get_user_message(self, user_name: str) -> groom_pb2.ReceivedMessage:
+        return await self.users[user_name].get()
+
+
+class Rooms:
+    def __init__(self):
+        self.rooms: dict[str, Room] = {}
+
+    def _add_room(self, room: str):
+        if room not in self.rooms:
+            self.rooms[room] = Room(room)
+
+    def add_user_to_room(self, room: str, user: str):
+        self._add_room(room)
+        self.rooms[room].add_user(user)
+
+    # def add_message_to_room(self, room: str, message: groom_pb2.ReceivedMessage):
+    # self.rooms[room].add_message(message)
+
+    def get_room(self, room: str) -> Room:
+        return self.rooms[room]
