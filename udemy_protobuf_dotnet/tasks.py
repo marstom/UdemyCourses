@@ -77,17 +77,6 @@ def run_1_groom_server(c):
     )
 
 
-# TODO it's not working, use nomral script
-# @task
-# def run_1b_groom_client(c):
-#     """ Chat Cllient"""
-#     c.run(
-#         "cd chat_client && PYTHONPATH=$(pwd) python chat_client.py",
-#         echo=True,
-#         pty=True,
-#     )
-
-
 @task
 def run_2_groom_admin(c):
     """Second run this admin panel, it will monitor messages for you!"""
