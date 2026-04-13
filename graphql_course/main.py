@@ -1,7 +1,25 @@
+from graphql_schema import schema
+from icecream import ic, install
+
+query = """
+{
+  notes {
+    title
+    content
+    created
+    due
+    
+  }
+}
+"""
 def main():
-    print("Hello from graphql-course!")
+    result = schema.execute(query)
+    ic(result.data)
+    ic(result.errors)
+    # for e in result:
+    #     ic(e)
 
 
 if __name__ == "__main__":
-    main()
+    install()
     main()
