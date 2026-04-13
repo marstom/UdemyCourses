@@ -10,3 +10,5 @@ class Query(graphene.ObjectType):
     @staticmethod
     def resolve_notes(root, info):
         return global_data.notes
+
+    # wyszukiwarka

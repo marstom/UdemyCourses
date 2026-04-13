@@ -8,10 +8,13 @@ query = """
     content
     created
     due
+    contentShort
     
   }
 }
 """
+
+
 def main():
     result = schema.execute(query)
     ic(result.data)
@@ -23,3 +26,5 @@ def main():
 if __name__ == "__main__":
     install()
     main()
+
+    # Skoczyłem na 4.5 point
