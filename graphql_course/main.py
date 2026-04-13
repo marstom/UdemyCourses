@@ -3,7 +3,7 @@ from icecream import ic, install
 
 query = """
 {
-  notes {
+  notes (titleContains: "an") {
     title
     content
     created
