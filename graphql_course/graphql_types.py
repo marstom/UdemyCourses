@@ -1,20 +1,44 @@
 from datetime import datetime
 import graphene
 
-from models import NoteState
+from models import NoteState, AddressInfo, ContactInfo
+
+NoteStateType = graphene.Enum.from_enum(NoteState)
+
+
+class AddressInfoType(graphene.ObjectType):
+    street = graphene.String()
+    city = graphene.String()
+
+
+class ContactInfoType(graphene.ObjectType):
+    name = graphene.String()
+    phone = graphene.String()
+
+
+class InfoType(graphene.Union):
+    class Meta:
+        types = (AddressInfoType, ContactInfoType)
+
+    @classmethod
+    def resolve_type(cls, instance, info):
+        if isinstance(instance, AddressInfo):
+            return AddressInfoType
+        elif isinstance(instance, ContactInfo):
+            return ContactInfoType
+        else:
+            return None
 
 
 class NoteType(graphene.ObjectType):
     title = graphene.String()
     content = graphene.String()
     created = graphene.DateTime()
-    # no edited
     due = graphene.DateTime()
-
-    ####
     content_short = graphene.String()
 
-    state = graphene.Enum.from_enum(NoteState)()
+    state = NoteStateType()
+    info = InfoType()
 
     @staticmethod
     def resolve_title(root, info):

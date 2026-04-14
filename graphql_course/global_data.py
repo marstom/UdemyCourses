@@ -1,15 +1,16 @@
 from datetime import datetime
 
-from models import Note
 
+from models import Note, AddressInfo, ContactInfo
 
 notes = [
     Note(
-        title="First Note",
-        content=None,
+        title="Call my parents",
+        content="Call them",
         created=datetime(2021, 1, 1),
         edited=datetime(2021, 1, 1),
         due=datetime(2021, 1, 1),
+        info=ContactInfo(name="Tom", phone="123456789"),
     ),
     Note(
         title="Second Note",
@@ -17,6 +18,7 @@ notes = [
         created=datetime(2021, 1, 2),
         edited=datetime(2021, 1, 2),
         due=datetime(2021, 1, 2),
+        info=ContactInfo(name="Tom", phone="123456789"),
     ),
     Note(
         title="Third Note",
@@ -59,5 +61,6 @@ notes = [
         created=datetime(2021, 1, 8),
         edited=datetime(2021, 1, 8),
         due=datetime(2021, 1, 8),
+        info=AddressInfo(street="Eggs address info", city="Wegs"),
     ),
 ]

@@ -5,11 +5,8 @@ import graphene
 from graphql import GraphQLError
 
 import global_data
-from graphql_types import NoteType
-from models import Note, NoteState
-
-
-NoteStateType = graphene.Enum.from_enum(NoteState)
+from graphql_types import NoteType, NoteStateType
+from models import Note
 
 
 class CreateNote(graphene.Mutation):

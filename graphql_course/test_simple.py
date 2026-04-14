@@ -19,6 +19,46 @@ def test_query():
         due
         contentShort
         state
+        info {
+            __typename  # this is fragment construction
+            ... on AddressInfoType {
+                street
+                city
+            }
+            ... on ContactInfoType {
+                phone
+            }
+        }
+
+      }
+    }
+    """
+    result = schema.execute(query)
+    print_results(result)
+
+
+def test_query2():
+    query = """
+    {
+      notes (filters: {
+        titleContains: "par"
+      }) {
+        title
+        content
+        created
+        due
+        contentShort
+        state
+        info {
+            __typename  # this is fragment construction
+            ... on AddressInfoType {
+                street
+                city
+            }
+            ... on ContactInfoType {
+                phone
+            }
+        }
 
       }
     }
@@ -133,3 +173,6 @@ def test_mutation_change_note_status():
     }
     """)
     print_results(result)
+
+
+# def test_

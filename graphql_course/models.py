@@ -16,3 +16,16 @@ class Note:
     edited: datetime = ""
     due: datetime = ""
     state: NoteState = NoteState.pending
+    info: AddressInfo | ContactInfo | None = None
+
+
+@dataclass
+class AddressInfo:
+    street: str
+    city: str
+
+
+@dataclass
+class ContactInfo:
+    name: str
+    phone: str
