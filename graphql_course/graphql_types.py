@@ -1,6 +1,8 @@
 from datetime import datetime
 import graphene
 
+from models import NoteState
+
 
 class NoteType(graphene.ObjectType):
     title = graphene.String()
@@ -11,6 +13,8 @@ class NoteType(graphene.ObjectType):
 
     ####
     content_short = graphene.String()
+
+    state = graphene.Enum.from_enum(NoteState)()
 
     @staticmethod
     def resolve_title(root, info):

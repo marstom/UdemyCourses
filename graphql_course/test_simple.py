@@ -18,13 +18,13 @@ def test_query():
         created
         due
         contentShort
+        state
 
       }
     }
     """
     result = schema.execute(query)
-    ic(result.data)
-    ic(result.errors)
+    print_results(result)
 
 
 def test_mutation():
@@ -90,4 +90,46 @@ def test_error_date():
     """
     ic("--mutation--")
     result = schema.execute(query_mutation)
+    print_results(result)
+
+
+def test_docs():
+    ic("--query--")
+    schema.execute("""
+    {
+        notes {
+            title
+            content
+        }
+    }
+    """)
+    ic(str(schema))
+
+
+def test_mutation_change_note_status():
+    query_mutation = """
+    mutation {
+      changeNoteState(idx: 0, state: done) {
+        success
+        note {
+          title
+          content
+          due
+        }
+      }
+    }
+    """
+    ic("--mutation--")
+    result = schema.execute(query_mutation)
+    print_results(result)
+
+    result = schema.execute("""
+    {
+        notes {
+            title
+            content
+            state
+        }
+    }
+    """)
     print_results(result)
