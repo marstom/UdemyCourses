@@ -26,4 +26,3 @@ class NotesFilter(graphene.InputObjectType):
     # content_contains = graphene.String(default_value="")
     created_after = graphene.DateTime(default_value=datetime.min)
     created_before = graphene.DateTime(default_value=datetime.max)
-
