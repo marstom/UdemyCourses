@@ -26,4 +26,3 @@ class Query(graphene.ObjectType):
             return [note for note in global_data.notes if title_contains in note.title]
         return global_data.notes
 
-    # rozdz 4.8 <-----

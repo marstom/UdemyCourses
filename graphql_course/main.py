@@ -16,9 +16,24 @@ query = """
 }
 """
 
+# query_mutation = """
+# mutation {
+#   createNote {
+#     success
+#   }
+# }
+# """
+query_mutation = """
+mutation {
+  createNote(title: "New Note", content: "New Content") {
+    success
+  }
+}
+"""
+
 
 def main():
-    result = schema.execute(query)
+    result = schema.execute(query_mutation)
     ic(result.data)
     ic(result.errors)
     # for e in result:
