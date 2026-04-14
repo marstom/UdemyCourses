@@ -11,6 +11,7 @@ notes = [
         edited=datetime(2021, 1, 1),
         due=datetime(2021, 1, 1),
         info=ContactInfo(name="Tom", phone="123456789"),
+        info_inter=ContactInfo(name="Tom", phone="123456789"),
     ),
     Note(
         title="Second Note",
@@ -62,5 +63,6 @@ notes = [
         edited=datetime(2021, 1, 8),
         due=datetime(2021, 1, 8),
         info=AddressInfo(street="Eggs address info", city="Wegs"),
+        info_inter=AddressInfo(street="Eggs address info", city="Wegs"),
     ),
 ]

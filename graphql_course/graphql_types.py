@@ -11,6 +11,36 @@ class AddressInfoType(graphene.ObjectType):
     city = graphene.String()
 
 
+class InfoTypeInter(graphene.Interface):
+    name = graphene.String()
+    city = graphene.String()
+
+    @classmethod
+    def resolve_type(cls, instance, info):
+        if isinstance(instance, AddressInfo):
+            return AddressInfoTypeInter
+        elif isinstance(instance, ContactInfo):
+            return ContactInfoTypeInter
+        else:
+            return None
+
+
+class AddressInfoTypeInter(graphene.ObjectType):
+    class Meta:
+        interfaces = (InfoTypeInter,)
+
+
+class ContactInfoTypeInter(graphene.ObjectType):
+    class Meta:
+        interfaces = (InfoTypeInter,)
+
+    name = graphene.String()
+    phone = graphene.String()
+
+
+######################
+
+
 class ContactInfoType(graphene.ObjectType):
     name = graphene.String()
     phone = graphene.String()
@@ -39,6 +69,7 @@ class NoteType(graphene.ObjectType):
 
     state = NoteStateType()
     info = InfoType()
+    info_inter = graphene.Field(InfoTypeInter)
 
     @staticmethod
     def resolve_title(root, info):

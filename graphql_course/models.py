@@ -17,6 +17,7 @@ class Note:
     due: datetime = ""
     state: NoteState = NoteState.pending
     info: AddressInfo | ContactInfo | None = None
+    info_inter: AddressInfo | ContactInfo | None = None
 
 
 @dataclass

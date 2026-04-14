@@ -52,10 +52,20 @@ def test_query2():
         info {
             __typename  # this is fragment construction
             ... on AddressInfoType {
-                street
                 city
             }
             ... on ContactInfoType {
+                phone
+            }
+        }
+        infoInter {
+            __typename  # this is fragment construction
+            name
+            city
+            ... on AddressInfoTypeInter {
+                name
+            }
+            ... on ContactInfoTypeInter {
                 phone
             }
         }
