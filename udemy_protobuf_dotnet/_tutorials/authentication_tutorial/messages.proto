@@ -2,6 +2,7 @@ syntax="proto3";
 
 package groom;
 
+import "google/protobuf/empty.proto";
 
 message DoorLockRequest {
     string msg = 1;
@@ -21,4 +22,5 @@ message DoorLockResponse{
 
 service Door {
     rpc SendCommandToDoor(DoorLockRequest) returns (DoorLockResponse);
+    rpc showMetadata(google.protobuf.Empty) returns (google.protobuf.Empty);
 }

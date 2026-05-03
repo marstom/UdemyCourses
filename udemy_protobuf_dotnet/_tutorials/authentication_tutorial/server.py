@@ -7,6 +7,8 @@ import messages_pb2_grpc
 from grpc_reflection.v1alpha import reflection
 from loguru import logger
 import sys
+from google.protobuf import empty_pb2
+from interceptors import AuthInterceptor
 
 logger.remove()
 logger.add(sys.stderr, level="DEBUG")
@@ -32,8 +34,15 @@ class Door(messages_pb2_grpc.DoorServicer):
 
         return messages_pb2.DoorLockResponse(ans="Locked")
 
+    def showMetadata(self, request, context):
+        metadata = dict(context.invocation_metadata())
+        logger.debug(metadata)
+        return empty_pb2.Empty()
+
 async def serve():
-    server = grpc.aio.server()
+    server = grpc.aio.server(
+        interceptors=[AuthInterceptor()]
+    )
     messages_pb2_grpc.add_DoorServicer_to_server(Door(), server)
 
     # 👇 THIS IS THE MAGIC
