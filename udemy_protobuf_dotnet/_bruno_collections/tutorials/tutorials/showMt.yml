@@ -1,0 +1,18 @@
+info:
+  name: showMt
+  type: grpc
+  seq: 2
+
+grpc:
+  url: 0.0.0.0:50055
+  method: /groom.Door/SendCommandToDoor
+  methodType: unary
+  metadata:
+    - name: Authorization
+      value: Bearer abc123
+  message: |-
+    {
+      "msg": "suppellex",
+      "rrr": "1234"
+    }
+  auth: inherit
