@@ -1,0 +1,24 @@
+syntax="proto3";
+
+package groom;
+
+
+message DoorLockRequest {
+    string msg = 1;
+    oneof auth {
+        string pass = 2;
+        string token = 3;
+        int32 icode = 4;
+        string rrr= 5;
+    }
+}
+
+
+message DoorLockResponse{
+    string ans = 1;
+}
+
+
+service Door {
+    rpc SendCommandToDoor(DoorLockRequest) returns (DoorLockResponse);
+}

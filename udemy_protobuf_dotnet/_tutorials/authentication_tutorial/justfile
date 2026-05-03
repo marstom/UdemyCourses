@@ -1,0 +1,17 @@
+
+compile_proto:
+    python -m grpc_tools.protoc \
+      -I ./ \
+      --python_out=. \
+      --grpc_python_out=. \
+      messages.proto
+
+
+# the ui for queries
+grpcui:
+    grpcui -plaintext localhost:50055
+
+
+# run grpc server
+runserver:
+    python server.py
