@@ -207,6 +207,7 @@ dependencies = [
     { name = "ipdb" },
     { name = "ipython" },
     { name = "pydantic" },
+    { name = "starlette-graphene3" },
     { name = "uvicorn" },
 ]
 
@@ -226,6 +227,7 @@ requires-dist = [
     { name = "ipdb", specifier = ">=0.13.13" },
     { name = "ipython", specifier = ">=9.12.0" },
     { name = "pydantic", specifier = ">=2.13.0" },
+    { name = "starlette-graphene3", specifier = ">=0.6.0" },
     { name = "uvicorn", specifier = ">=0.44.0" },
 ]
 
@@ -690,6 +692,20 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/81/69/17425771797c36cded50b7fe44e850315d039f28b15901ab44839e70b593/starlette-1.0.0.tar.gz", hash = "sha256:6a4beaf1f81bb472fd19ea9b918b50dc3a77a6f2e190a12954b25e6ed5eea149", size = 2655289, upload-time = "2026-03-22T18:29:46.779Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/0b/c9/584bc9651441b4ba60cc4d557d8a547b5aff901af35bda3a4ee30c819b82/starlette-1.0.0-py3-none-any.whl", hash = "sha256:d3ec55e0bb321692d275455ddfd3df75fff145d009685eb40dc91fc66b03d38b", size = 72651, upload-time = "2026-03-22T18:29:45.111Z" },
+]
+
+[[package]]
+name = "starlette-graphene3"
+version = "0.6.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "graphene" },
+    { name = "graphql-core" },
+    { name = "starlette" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/a9/3c/f216ea04650e56de248bc6995ee87652e7002693198d8edc1076f650c29c/starlette-graphene3-0.6.0.tar.gz", hash = "sha256:cbe4ca397b24013d5b3161dd4144e9b3e836af0ef01a625bb6113946fc7d36d9", size = 9318, upload-time = "2022-06-01T13:17:24.523Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/99/40/64647d16f04ffdaf6cb502f73e2137c5f05cd3b0e521ade85a91aae4fe5d/starlette_graphene3-0.6.0-py3-none-any.whl", hash = "sha256:193ff6e0900a3259ccf76b534cd84eaa2feefcaf92652b3b0f54fc784c80ce14", size = 8954, upload-time = "2022-06-01T13:17:26.14Z" },
 ]
 
 [[package]]

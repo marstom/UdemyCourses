@@ -12,6 +12,7 @@ dependencies = [
     "ipdb>=0.13.13",
     "ipython>=9.12.0",
     "pydantic>=2.13.0",
+    "starlette-graphene3>=0.6.0",
     "uvicorn>=0.44.0",
 ]
 
